@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>MyFirstBlog</title>
+    <url>/2023/10/22/MyFirstBlog/</url>
+    <content><![CDATA[<h1 id="haha"><a href="#haha" class="headerlink" title="haha"></a>haha</h1><h3 id="heiehei"><a href="#heiehei" class="headerlink" title="heiehei"></a>heiehei</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="type">void</span> <span class="title function_">main</span><span class="params">()</span>&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;hello world&quot;</span>);</span><br></pre></td></tr></table></figure>
+<p>$$<br>\int_a^b<br>$$</p>
+]]></content>
+      <tags>
+        <tag>教程</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Hello World</title>
+    <url>/2023/10/22/hello-world/</url>
+    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+]]></content>
+  </entry>
+  <entry>
+    <title>TensorFlow在树莓派4B的保姆级教程</title>
+    <url>/2023/10/23/TensorFlow%E5%9C%A8%E6%A0%91%E8%8E%93%E6%B4%BE4B%E7%9A%84%E4%BF%9D%E5%A7%86%E7%BA%A7%E6%95%99%E7%A8%8B/</url>
+    <content><![CDATA[<h1 id="1"><a href="#1" class="headerlink" title="1"></a>1</h1><p><img src="https://upload-images.jianshu.io/upload_images/4443033-9eb5a8b422a71acc.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/150/format/webp" alt="鲁迅"><br><img src="https://www.aliyundrive.com/s/UJpkM7NXbrt" alt="招聘"></p>
+]]></content>
+      <categories>
+        <category>技术文章</category>
+        <category>教程</category>
+      </categories>
+      <tags>
+        <tag>Test1</tag>
+        <tag>Test2</tag>
+        <tag>Test3</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>tag</title>
+    <url>/tag/index.html</url>
+    <content><![CDATA[]]></content>
+  </entry>
+</search>

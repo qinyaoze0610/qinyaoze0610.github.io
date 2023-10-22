@@ -109,6 +109,10 @@
                    
           
           
+            <li class="menu-item search-btn">
+              <a href="#">Search</a>
+            </li>
+          
         </ul>
       </nav>
     </div>
@@ -126,6 +130,24 @@
 
         
             <div class="year-title">2023</div>
+        
+
+        <div class="post-list-item">
+            <div class="post-title">
+            <a href="/2023/10/23/TensorFlow%E5%9C%A8%E6%A0%91%E8%8E%93%E6%B4%BE4B%E7%9A%84%E4%BF%9D%E5%A7%86%E7%BA%A7%E6%95%99%E7%A8%8B/">
+                
+                    TensorFlow在树莓派4B的保姆级教程
+                
+                </a> 
+            </div>
+            
+            <span class="post-date">Oct 23, 2023</span>
+        </div>
+
+    
+
+        
+
         
 
         <div class="post-list-item">
@@ -179,6 +201,37 @@
 
     </div>
 
+    
+      <div class="search-popup">
+    <div class="search-popup-overlay">  
+    </div>
+    <div class="search-popup-window" >
+        <div class="search-header">
+            <div class="search-input-container">
+              <input autocomplete="off" autocapitalize="off" maxlength="80"
+                     placeholder="Search Anything" spellcheck="false"
+                     type="search" class="search-input">
+            </div>
+            <div class="search-close-btn">
+                <div class="icon close-btn"></div>
+            </div>
+        </div>
+        <div class="search-result-container">
+        </div>
+    </div>
+</div>
+
+<script>
+    const searchConfig = {
+        path             : "/search.xml",
+        top_n_per_article: "1",
+        unescape         : "false",
+        trigger: "auto",
+        preload: "false"
+    }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js"></script>
+<script src="/js/search.js"></script>
     
     
 

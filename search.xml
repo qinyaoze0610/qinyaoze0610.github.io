@@ -8,6 +8,24 @@
 ]]></content>
   </entry>
   <entry>
+    <title>照片测试</title>
+    <url>/2023/10/26/test/</url>
+    <content><![CDATA[<img src="/2023/10/26/test/1.jpg" class="" title="This is an example image">
+
+<p>拍摄者：秦耀泽</p>
+<p>拍摄时间：2023&#x2F;09&#x2F;26</p>
+<p>拍摄地点：北京市大兴区南海子公园</p>
+]]></content>
+      <tags>
+        <tag>教程</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Resume</title>
+    <url>/Resume/index.html</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
     <title>AboutMe</title>
     <url>/AboutMe/index.html</url>
     <content><![CDATA[<h3 id="2023-10-22-今日笔记"><a href="#2023-10-22-今日笔记" class="headerlink" title="2023&#x2F;10&#x2F;22 今日笔记"></a>2023&#x2F;10&#x2F;22 今日笔记</h3><p>【Q1】</p>
@@ -32,11 +50,6 @@
 <li>学习编程时间过长：1小时 正常3小时</li>
 </ol>
 ]]></content>
-  </entry>
-  <entry>
-    <title>Resume</title>
-    <url>/Resume/index.html</url>
-    <content><![CDATA[]]></content>
   </entry>
   <entry>
     <title>tag</title>

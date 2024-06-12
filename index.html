@@ -1,35 +1,38 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <title>考研录取率</title>
     <script>
         // 显示表单数据
         function displayFormData(event) {
-            event.preventDefault(); // 阻止表单默认提交行为
+            event.preventDefault();
 
             // 输入验证
             var attributeRadio = document.querySelector('input[name="attributeCode"]:checked');
             var englishDifficultyLevel = document.querySelector('input[name="englishDifficultyLevel"]:checked');
             var mathRadio = document.querySelector('input[name="mathDifficultyLevel"]:checked');
+            var professionalCourseRadio = document.querySelector('input[name="professionalCourseDifficulty"]:checked');
 
-            if (!attributeRadio || !englishDifficultyLevel || !mathRadio) {
+            if (!attributeRadio || !englishDifficultyLevel || !mathRadio || !professionalCourseRadio) {
                 alert('请确保所有选项都被选择！');
                 return;
             }
 
-            // 获取表单数据
             // 获取属性代码的实际数值和显示文本
-            var attributeCodeValue = attributeRadio.value;
+            var attributeCodeValue = parseInt(attributeRadio.value);
             var attributeCodeText = document.querySelector('label[for="' + attributeRadio.id + '"]').textContent;
 
-            var englishDifficultyLevelValue = englishDifficultyLevel.value;
-            // 获取数学难度的实际数值和显示文本
-            var mathDifficultyLevelValue = mathRadio.value;
+            var englishDifficultyLevelValue = parseInt(englishDifficultyLevel.value);
+            var mathDifficultyLevelValue = parseInt(mathRadio.value);
             var mathDifficultyLevelText = document.querySelector('label[for="' + mathRadio.id + '"]').textContent;
 
-            // 计算id总和
-            var idSum = parseInt(attributeCodeValue) + parseInt(englishDifficultyLevelValue) + parseInt(mathDifficultyLevelValue);
+            var professionalCourseDifficultyValue = parseInt(professionalCourseRadio.value);
+            var professionalCourseDifficultyText = document.querySelector('label[for="' + professionalCourseRadio.id + '"]').textContent;
+
+            // 计算ID总和
+            var idSum = attributeCodeValue + englishDifficultyLevelValue + mathDifficultyLevelValue + professionalCourseDifficultyValue;
 
             // 检查表格是否存在，如果不存在则创建
             var table = document.getElementById('formDataTable');
@@ -42,7 +45,7 @@
                 // 添加表头
                 var thead = document.createElement('thead');
                 var headerRow = document.createElement('tr');
-                var headers = ['属性代码', '英语难度', '数学难度', 'ID总和'];
+                var headers = ['属性代码', '英语难度', '数学难度', '专业课难度', 'ID总和'];
                 headers.forEach(function(headerText) {
                     var header = document.createElement('th');
                     header.textContent = headerText;
@@ -56,7 +59,7 @@
             // 添加数据行
             var tbody = table.getElementsByTagName('tbody')[0] || table.appendChild(document.createElement('tbody'));
             var dataRow = document.createElement('tr');
-            var data = [attributeCodeText, '英语' + englishDifficultyLevelValue, mathDifficultyLevelText, idSum];
+            var data = [attributeCodeText, '英语' + englishDifficultyLevelValue, mathDifficultyLevelText, professionalCourseDifficultyText, idSum];
             data.forEach(function(dataText) {
                 var cell = document.createElement('td');
                 cell.textContent = dataText;
@@ -66,70 +69,81 @@
         }
 
         // 表格排序
-// 根据指定列的值对表格进行排序（从高到低）
-function sortTable() {
-    var table, rows, switching, i, x, y, shouldSwitch;
-    table = document.getElementById('formDataTable');
-    switching = true;
-    while (switching) {
-        switching = false;
-        rows = table.rows;
-        for (i = 1; i < (rows.length - 1); i++) {
-            shouldSwitch = false;
-            x = getValueToCompare(rows[i].getElementsByTagName('td')[3]); // 这里的 3 对应 ID 总和的列索引
-            y = getValueToCompare(rows[i + 1].getElementsByTagName('td')[3]); // 这里的 3 对应 ID 总和的列索引
-            if (x < y) { // 这里将比较符号改为 <
-                shouldSwitch = true;
-                break;
+        function sortTable() {
+            var table, rows, switching, i, x, y, shouldSwitch;
+            table = document.getElementById('formDataTable');
+            switching = true;
+            while (switching) {
+                switching = false;
+                rows = table.rows;
+                for (i = 1; i < (rows.length - 1); i++) {
+                    shouldSwitch = false;
+                    x = parseInt(getValueToCompare(rows[i].getElementsByTagName('td')[3]));
+                    y = parseInt(getValueToCompare(rows[i + 1].getElementsByTagName('td')[3]));
+                    if (x < y) {
+                        shouldSwitch = true;
+                        break;
+                    }
+                }
+                if (shouldSwitch) {
+                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                    switching = true;
+                }
             }
         }
-        if (shouldSwitch) {
-            rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
-            switching = true;
+
+        // Get the value for comparison
+        function getValueToCompare(cell) {
+            var content = cell.textContent;
+            if (content.includes('数学')) {
+                return content.includes('数学1') ? 1 : (content.includes('数学2') ? 2 : 3);
+            } else if (content.includes('英语')) {
+                return parseInt(content.match(/\d+/)[0]);
+            } else {
+                return parseInt(content);
+            }
         }
-    }
-}
-
-// 获取用于比较的数值
-// 从单元格中获取用于比较的数值
-function getValueToCompare(cell) {
-    var content = cell.textContent;
-    if (content.includes('数学')) {
-        return parseInt(content.match(/\d+/)[0]);
-    } else {
-        return parseInt(content);
-    }
-}
-
     </script>
+
+    <style>
+    </style>
 </head>
+
 <body>
     <h1>考研录取率</h1>
-    <button onclick="sortTable()">排序表格</button> <!-- 新添加的排序按钮 -->
+    <button onclick="sortTable()">排序表格</button>
     <form onsubmit="displayFormData(event)">
         <label for="attributeCode">属性代码：</label>
         <input type="radio" name="attributeCode" id="amd" value="1" required>
-            <label for="amd">学术硕士</label>
+        <label for="amd">学术硕士</label>
         <input type="radio" name="attributeCode" id="pd" value="2" required>
-            <label for="pd">专业硕士</label>
-        
+        <label for="pd">专业硕士</label>
+
         <br>
 
         <label for="englishDifficultyLevel">英语科目：</label>
         <input type="radio" name="englishDifficultyLevel" id="e1" value="1" required>
-            <label for="e1">英语1</label>
+        <label for="e1">英语1</label>
         <input type="radio" name="englishDifficultyLevel" id="e2" value="2" required>
-            <label for="e2">英语2</label>
+        <label for="e2">英语2</label>
 
         <br>
 
         <label for="mathDifficultyLevel">数学科目：</label>
         <input type="radio" name="mathDifficultyLevel" id="m1" value="1" required>
-            <label for="m1">数学1</label>
+        <label for="m1">数学1</label>
         <input type="radio" name="mathDifficultyLevel" id="m2" value="3" required>
-            <label for="m2">数学2</label>
+        <label for="m2">数学2</label>
         <input type="radio" name="mathDifficultyLevel" id="m3" value="2" required>
-            <label for="m3">数学3</label>
+        <label for="m3">数学3</label>
+
+        <br>
+
+        <label for="professionalCourseDifficulty">专业课难度：</label>
+        <input type="radio" name="professionalCourseDifficulty" id="l1" value="1" required>
+        <label for="l1">学过</label>
+        <input type="radio" name="professionalCourseDifficulty" id="l2" value="0" required>
+        <label for="l2">没学过</label>
 
         <br>
 
@@ -142,6 +156,7 @@ function getValueToCompare(cell) {
                 <th>属性代码</th>
                 <th>英语难度</th>
                 <th>数学难度</th>
+                <th>专业课难度</th>
                 <th>ID总和</th>
             </tr>
         </thead>
@@ -150,4 +165,5 @@ function getValueToCompare(cell) {
         </tbody>
     </table>
 </body>
+
 </html>

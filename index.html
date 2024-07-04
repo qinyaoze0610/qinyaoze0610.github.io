@@ -1,168 +1,231 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>考研录取率</title>
-    <script>
-        // 显示表单数据
-        function displayFormData(event) {
-            event.preventDefault();
-
-            // 输入验证
-            var attributeRadio = document.querySelector('input[name="attributeCode"]:checked');
-            var englishDifficultyLevel = document.querySelector('input[name="englishDifficultyLevel"]:checked');
-            var mathRadio = document.querySelector('input[name="mathDifficultyLevel"]:checked');
-            var professionalCourseRadio = document.querySelector('input[name="professionalCourseDifficulty"]:checked');
-
-            if (!attributeRadio || !englishDifficultyLevel || !mathRadio || !professionalCourseRadio) {
-                alert('请确保所有选项都被选择！');
-                return;
-            }
-
-            // 获取属性代码的实际数值和显示文本
-            var attributeCodeValue = parseInt(attributeRadio.value);
-            var attributeCodeText = document.querySelector('label[for="' + attributeRadio.id + '"]').textContent;
-
-            var englishDifficultyLevelValue = parseInt(englishDifficultyLevel.value);
-            var mathDifficultyLevelValue = parseInt(mathRadio.value);
-            var mathDifficultyLevelText = document.querySelector('label[for="' + mathRadio.id + '"]').textContent;
-
-            var professionalCourseDifficultyValue = parseInt(professionalCourseRadio.value);
-            var professionalCourseDifficultyText = document.querySelector('label[for="' + professionalCourseRadio.id + '"]').textContent;
-
-            // 计算ID总和
-            var idSum = attributeCodeValue + englishDifficultyLevelValue + mathDifficultyLevelValue + professionalCourseDifficultyValue;
-
-            // 检查表格是否存在，如果不存在则创建
-            var table = document.getElementById('formDataTable');
-            if (!table) {
-                table = document.createElement('table');
-                table.border = '1';
-                table.id = 'formDataTable';
-                document.body.appendChild(table);
-
-                // 添加表头
-                var thead = document.createElement('thead');
-                var headerRow = document.createElement('tr');
-                var headers = ['属性代码', '英语难度', '数学难度', '专业课难度', 'ID总和'];
-                headers.forEach(function(headerText) {
-                    var header = document.createElement('th');
-                    header.textContent = headerText;
-                    headerRow.appendChild(header);
-                });
-
-                thead.appendChild(headerRow);
-                table.appendChild(thead);
-            }
-
-            // 添加数据行
-            var tbody = table.getElementsByTagName('tbody')[0] || table.appendChild(document.createElement('tbody'));
-            var dataRow = document.createElement('tr');
-            var data = [attributeCodeText, '英语' + englishDifficultyLevelValue, mathDifficultyLevelText, professionalCourseDifficultyText, idSum];
-            data.forEach(function(dataText) {
-                var cell = document.createElement('td');
-                cell.textContent = dataText;
-                dataRow.appendChild(cell);
-            });
-            tbody.appendChild(dataRow);
-        }
-
-        // 表格排序
-        function sortTable() {
-            var table, rows, switching, i, x, y, shouldSwitch;
-            table = document.getElementById('formDataTable');
-            switching = true;
-            while (switching) {
-                switching = false;
-                rows = table.rows;
-                for (i = 1; i < (rows.length - 1); i++) {
-                    shouldSwitch = false;
-                    x = parseInt(getValueToCompare(rows[i].getElementsByTagName('td')[3]));
-                    y = parseInt(getValueToCompare(rows[i + 1].getElementsByTagName('td')[3]));
-                    if (x < y) {
-                        shouldSwitch = true;
-                        break;
-                    }
-                }
-                if (shouldSwitch) {
-                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
-                    switching = true;
-                }
-            }
-        }
-
-        // Get the value for comparison
-        function getValueToCompare(cell) {
-            var content = cell.textContent;
-            if (content.includes('数学')) {
-                return content.includes('数学1') ? 1 : (content.includes('数学2') ? 2 : 3);
-            } else if (content.includes('英语')) {
-                return parseInt(content.match(/\d+/)[0]);
-            } else {
-                return parseInt(content);
-            }
-        }
-    </script>
-
-    <style>
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pomodoro Timer</title>
+<style>
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #222;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    color: #ddd;
+  }
+  .container {
+    max-width: 400px; /* 最大宽度 */
+    background-color: #333;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+    text-align: center;
+    transform: scale(2); /* 缩放默认为 1 */
+    transform-origin: center center;
+  }
+  .timer {
+    font-size: 3em;
+    color: #f39c12;
+    border: 2px solid #f1c40f;
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+  }
+  .input-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  input {
+    padding: 8px;
+    font-size: 1em;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    width: 60px;
+    text-align: center;
+    margin-left: 10px;
+  }
+  label {
+    font-size: 1.1em;
+    margin-left: 10px;
+  }
+  .controls {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+  }
+  button {
+    padding: 12px 30px;
+    font-size: 1.1em;
+    background-color: #2ecc71;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    text-transform: uppercase;
+  }
+  button:hover {
+    background-color: #27ae60;
+  }
+  .end-message {
+    font-size: 1.2em;
+    color: #f39c12;
+    margin-top: 20px;
+    display: none;
+  }
+  .time-label {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+  }
+</style>
 </head>
-
 <body>
-    <h1>考研录取率</h1>
-    <button onclick="sortTable()">排序表格</button>
-    <form onsubmit="displayFormData(event)">
-        <label for="attributeCode">属性代码：</label>
-        <input type="radio" name="attributeCode" id="amd" value="1" required>
-        <label for="amd">学术硕士</label>
-        <input type="radio" name="attributeCode" id="pd" value="2" required>
-        <label for="pd">专业硕士</label>
 
-        <br>
+<audio id="audioFocus">
+  <source src="1.wav" type="audio/wav">
+  Your browser does not support the audio element.
+</audio>
 
-        <label for="englishDifficultyLevel">英语科目：</label>
-        <input type="radio" name="englishDifficultyLevel" id="e1" value="1" required>
-        <label for="e1">英语1</label>
-        <input type="radio" name="englishDifficultyLevel" id="e2" value="2" required>
-        <label for="e2">英语2</label>
+<audio id="audioBreak">
+  <source src="1.wav" type="audio/wav">
+  Your browser does not support the audio element.
+</audio>
 
-        <br>
+<div class="container">
+  <div class="time-label" id="timeLabel">🧱 专注时间</div>
+  <div class="timer" id="timerDisplay">25:00</div>
+  <div class="input-wrapper">
+    <label for="totalWorkTime">工作时间：</label>
+    <input type="number" id="totalWorkTime" value="25">
+    <label>分钟</label>
+  </div>
+  <div class="controls">
+    <button id="startBtn">开始</button>
+    <button id="resetBtn">重开</button>
+  </div>
+  <div class="end-message" id="endMessage">恭喜你完成任务！</div>
+</div>
 
-        <label for="mathDifficultyLevel">数学科目：</label>
-        <input type="radio" name="mathDifficultyLevel" id="m1" value="1" required>
-        <label for="m1">数学1</label>
-        <input type="radio" name="mathDifficultyLevel" id="m2" value="3" required>
-        <label for="m2">数学2</label>
-        <input type="radio" name="mathDifficultyLevel" id="m3" value="2" required>
-        <label for="m3">数学3</label>
+<script>
+const timerDisplay = document.getElementById('timerDisplay');
+const timeLabel = document.getElementById('timeLabel');
+const totalWorkTimeInput = document.getElementById('totalWorkTime');
+const startBtn = document.getElementById('startBtn');
+const resetBtn = document.getElementById('resetBtn');
+const endMessage = document.getElementById('endMessage');
+const audioFocus = document.getElementById('audioFocus');
+const audioBreak = document.getElementById('audioBreak');
 
-        <br>
+let animationFrameId;
+let timerRunning = false;
+let remainingSeconds;
+let startTime;
+let focusTime;
+let breakTime;
+let currentMode = 'focus';
+let workCycles;
+let cycleCount = 0;
 
-        <label for="professionalCourseDifficulty">专业课难度：</label>
-        <input type="radio" name="professionalCourseDifficulty" id="l1" value="1" required>
-        <label for="l1">学过</label>
-        <input type="radio" name="professionalCourseDifficulty" id="l2" value="0" required>
-        <label for="l2">没学过</label>
+startBtn.addEventListener('click', function() {
+  if (timerRunning) {
+    pauseTimer();
+  } else {
+    startTimer();
+  }
+});
 
-        <br>
+resetBtn.addEventListener('click', function() {
+  resetTimer();
+});
 
-        <input type="submit" value="提交">
-    </form>
+function startTimer() {
+  clearTimer();
+  const totalWorkTime = parseInt(totalWorkTimeInput.value);
+  const workCycleLength = Math.floor(totalWorkTime * 60 / 3);
+  workCycles = Math.ceil(totalWorkTime * 60 / workCycleLength);
+  focusTime = Math.floor(workCycleLength * 0.85);
+  breakTime = Math.ceil(workCycleLength * 0.15);
 
-    <table id="formDataTable" border="1">
-        <thead>
-            <tr>
-                <th>属性代码</th>
-                <th>英语难度</th>
-                <th>数学难度</th>
-                <th>专业课难度</th>
-                <th>ID总和</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- 表格数据行将在此动态添加 -->
-        </tbody>
-    </table>
+  remainingSeconds = currentMode === 'focus' ? focusTime : breakTime;
+  startTime = Date.now();
+  timerRunning = true;
+  startBtn.textContent = '暂停';
+  updateTimer();
+  playAudio(currentMode);
+}
+
+function updateTimer() {
+  const now = Date.now();
+  const elapsedSeconds = Math.floor((now - startTime) / 1000);
+  remainingSeconds = currentMode === 'focus' ? focusTime - elapsedSeconds : breakTime - elapsedSeconds;
+
+  if (remainingSeconds <= 0) {
+    handleTimerEnd();
+    return;
+  }
+
+  const minutes = Math.floor(remainingSeconds / 60);
+  const seconds = remainingSeconds % 60;
+  const minutesDisplay = minutes < 10 ? `0${minutes}` : `${minutes}`;
+  const secondsDisplay = seconds < 10 ? `0${seconds}` : `${seconds}`;
+  timerDisplay.textContent = `${minutesDisplay}:${secondsDisplay}`;
+
+  animationFrameId = requestAnimationFrame(updateTimer);
+}
+
+function handleTimerEnd() {
+  clearTimer();
+  if (currentMode === 'focus') {
+    currentMode = 'break';
+    remainingSeconds = breakTime;
+    timeLabel.textContent = '☕️ 休息时间';
+  } else {
+    currentMode = 'focus';
+    remainingSeconds = focusTime;
+    timeLabel.textContent = '🧱 专注时间';
+    if (++cycleCount >= workCycles) {
+      timerRunning = false;
+      endMessage.style.display = 'block';
+      timerDisplay.textContent = '00:00';
+      return;
+    }
+  }
+  startTimer();
+  playAudio(currentMode);
+}
+
+function pauseTimer() {
+  clearTimer();
+  timerRunning = false;
+  startBtn.textContent = '开始';
+}
+
+function clearTimer() {
+  cancelAnimationFrame(animationFrameId);
+}
+
+function resetTimer() {
+  clearTimer();
+  timerRunning = false;
+  cycleCount = 0;
+  endMessage.style.display = 'none';
+  startBtn.textContent = '开始';
+  timeLabel.textContent = '🧱 专注时间';
+  totalWorkTimeInput.value = 25;
+  timerDisplay.textContent = '25:00';
+}
+
+function playAudio(mode) {
+  const audio = mode === 'focus' ? audioFocus : audioBreak;
+  audio.currentTime = 0;
+  audio.play();
+}
+</script>
+
 </body>
-
 </html>

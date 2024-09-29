@@ -65,6 +65,27 @@
             color: #00ffcc;
         }
 
+        .filter-tags {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .filter-tags button {
+            background-color: transparent;
+            color: #00ffcc;
+            border: 2px solid #00ffcc;
+            padding: 5px 10px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .filter-tags button:hover {
+            background-color: #00ffcc;
+            color: #001f3f;
+        }
+
         .site-list {
             display: flex;
             flex-wrap: wrap;
@@ -132,13 +153,25 @@
             background-color: #ff851b;
         }
 
-        .iframe-preview {
-            width: 100%;
-            height: 200px;
-            margin-top: 15px;
-            border: 2px solid #00ffcc;
-            border-radius: 8px;
-            box-shadow: 0 0 10px #00ffcc;
+        .tags {
+            margin-top: 10px;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            background-color: #2ecc71;
+            color: white;
+            padding: 5px 10px;
+            margin: 5px;
+            border-radius: 5px;
+            font-size: 0.8em;
+            cursor: pointer;
+        }
+
+        .tag:hover {
+            background-color: #27ae60;
         }
 
         footer {
@@ -177,27 +210,45 @@
 
 <section id="learning">
     <h2>学习资源</h2>
+
+    <div class="filter-tags">
+        <button onclick="filterSites('编程')">编程</button>
+        <button onclick="filterSites('设计')">设计</button>
+        <button onclick="filterSites('大学')">大学</button>
+        <button onclick="filterSites('课程')">课程</button>
+        <button onclick="filterSites('所有')">显示所有</button>
+    </div>
+
     <div class="site-list">
-        <div class="site-item" data-url="https://www.imooc.com">
+        <div class="site-item" data-tags="编程 设计">
             <h3>慕课网</h3>
             <p>一个提供在线课程学习的平台，涵盖编程、设计等多个领域。</p>
             <a href="https://www.imooc.com" target="_blank">访问网站</a>
             <button class="copy-btn" onclick="copyToClipboard('https://www.imooc.com')">复制链接</button>
-            <iframe class="iframe-preview" src="https://www.imooc.com" frameborder="0"></iframe>
+            <div class="tags">
+                <span class="tag">编程</span>
+                <span class="tag">设计</span>
+            </div>
         </div>
-        <div class="site-item" data-url="https://www.coursera.org">
+        <div class="site-item" data-tags="大学 课程">
             <h3>Coursera</h3>
             <p>提供全球顶尖大学的课程，涵盖多种学科。</p>
             <a href="https://www.coursera.org" target="_blank">访问网站</a>
             <button class="copy-btn" onclick="copyToClipboard('https://www.coursera.org')">复制链接</button>
-            <iframe class="iframe-preview" src="https://www.coursera.org" frameborder="0"></iframe>
+            <div class="tags">
+                <span class="tag">大学</span>
+                <span class="tag">课程</span>
+            </div>
         </div>
-        <div class="site-item" data-url="https://www.edx.org">
+        <div class="site-item" data-tags="大学 免费课程">
             <h3>edX</h3>
             <p>一个提供来自知名大学的在线课程平台，内容丰富多样。</p>
             <a href="https://www.edx.org" target="_blank">访问网站</a>
             <button class="copy-btn" onclick="copyToClipboard('https://www.edx.org')">复制链接</button>
-            <iframe class="iframe-preview" src="https://www.edx.org" frameborder="0"></iframe>
+            <div class="tags">
+                <span class="tag">大学</span>
+                <span class="tag">免费课程</span>
+            </div>
         </div>
     </div>
 </section>
@@ -213,6 +264,19 @@
             alert('链接已复制: ' + text);
         }, function(err) {
             alert('复制失败');
+        });
+    }
+
+    // 筛选功能
+    function filterSites(tag) {
+        var sites = document.querySelectorAll('.site-item');
+        sites.forEach(function(site) {
+            var tags = site.getAttribute('data-tags');
+            if (tag === '所有' || tags.includes(tag)) {
+                site.style.display = 'block';
+            } else {
+                site.style.display = 'none';
+            }
         });
     }
 </script>

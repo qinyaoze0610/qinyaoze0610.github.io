@@ -1,166 +1,221 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>宝藏网站导航</title>
+    <title>Cyberpunk 宝藏网站导航</title>
     <style>
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #0d0d0d;
+            color: #00ffcc;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f4;
         }
-        .container {
-            width: 80%;
-            margin: auto;
-            overflow: hidden;
-        }
+
         header {
-            background: #333;
-            color: #fff;
-            padding-top: 30px;
-            min-height: 70px;
-            border-bottom: #0779e4 3px solid;
-        }
-        header a {
-            color: #fff;
-            text-decoration: none;
-            text-transform: uppercase;
-            font-size: 16px;
-        }
-        header ul {
-            padding: 0;
-            list-style: none;
-        }
-        header li {
-            display: inline;
-            padding: 0 20px 0 20px;
-        }
-        header #branding {
-            float: left;
-        }
-        header #branding h1 {
-            margin: 0;
-        }
-        header nav {
-            float: right;
-            margin-top: 10px;
-        }
-        header .highlight, header .current a {
-            color: #0779e4;
-            font-weight: bold;
-        }
-        header a:hover {
-            color: #0779e4;
-            font-weight: bold;
-        }
-        .navbar {
-            overflow: hidden;
-            background-color: #333;
-        }
-        .navbar a {
-            float: left;
-            display: block;
-            color: #f2f2f2;
-            text-align: center;
-            padding: 14px 16px;
-            text-decoration: none;
-        }
-        .navbar a:hover {
-            background-color: #ddd;
-            color: black;
-        }
-        .main-content {
-            padding: 16px;
-            background: #fff;
-            margin-top: 20px;
-        }
-        .card {
-            background-color: white;
-            margin: 20px;
+            background-color: #001f3f;
+            color: #00ffcc;
             padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
-        }
-        .card:hover {
-            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-        }
-        .card img {
-            max-width: 100px;
-            max-height: 100px;
-            border-radius: 4px;
-        }
-        .card h3 {
-            margin: 10px 0;
-            color: #333;
-        }
-        .card p {
-            margin: 0;
-            font-size: 14px;
-        }
-        footer {
-            background: #333;
-            color: #fff;
             text-align: center;
-            padding: 10px;
+            font-size: 2em;
+            text-transform: uppercase;
+            border-bottom: 4px solid #00ffcc;
+            box-shadow: 0 0 10px #00ffcc;
+        }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+            background-color: #001f3f;
+            box-shadow: 0 0 20px #00ffcc;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #00ffcc;
+            font-weight: bold;
+            margin: 10px;
+            padding: 10px 20px;
+            border: 2px solid #00ffcc;
+            border-radius: 5px;
+            transition: background-color 0.3s, color 0.3s;
+            box-shadow: 0 0 10px #00ffcc;
+        }
+
+        nav a:hover {
+            background-color: #00ffcc;
+            color: #001f3f;
+        }
+
+        section {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #001f3f;
+            border-radius: 8px;
+            box-shadow: 0 0 20px #00ffcc;
+            color: #fff;
+        }
+
+        section h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #00ffcc;
+        }
+
+        .site-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+        }
+
+        .site-item {
+            width: 30%;
+            background-color: #0d0d0d;
+            margin: 10px;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 0 10px #00ffcc;
+            text-align: center;
             position: relative;
-            bottom: 0;
+            border: 2px solid #00ffcc;
+            transition: transform 0.3s;
+        }
+
+        .site-item:hover {
+            transform: scale(1.05);
+        }
+
+        .site-item h3 {
+            color: #00ffcc;
+            margin-bottom: 10px;
+        }
+
+        .site-item p {
+            color: #7fdbff;
+            font-size: 0.9em;
+            margin-bottom: 15px;
+        }
+
+        .site-item a {
+            text-decoration: none;
+            color: #ff851b;
+            font-weight: bold;
+            display: inline-block;
+            margin-top: 10px;
+            border: 2px solid #ff851b;
+            padding: 5px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .site-item a:hover {
+            background-color: #ff851b;
+            color: #001f3f;
+        }
+
+        .copy-btn {
+            margin-top: 10px;
+            display: inline-block;
+            background-color: #ff4136;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .copy-btn:hover {
+            background-color: #ff851b;
+        }
+
+        .iframe-preview {
             width: 100%;
+            height: 200px;
+            margin-top: 15px;
+            border: 2px solid #00ffcc;
+            border-radius: 8px;
+            box-shadow: 0 0 10px #00ffcc;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #001f3f;
+            color: #00ffcc;
+            border-top: 2px solid #00ffcc;
+            box-shadow: 0 -2px 10px #00ffcc;
+        }
+
+        @media screen and (max-width: 768px) {
+            .site-item {
+                width: 45%;
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            .site-item {
+                width: 100%;
+            }
         }
     </style>
 </head>
 <body>
-    <header>
-        <div class="container">
-            <div id="branding">
-                <h1>宝藏网站导航</h1>
-            </div>
-            <nav>
-                <ul>
-                    <li class="current"><a href="index.html">首页</a></li>
-                    <li><a href="about.html">关于我们</a></li>
-                    <li><a href="contact.html">联系方式</a></li>
-                </ul>
-            </nav>
+
+<header>
+    Cyberpunk 宝藏网站导航
+</header>
+
+<nav>
+    <a href="#learning">学习资源</a>
+    <a href="#tools">工具类网站</a>
+    <a href="#entertainment">娱乐休闲</a>
+</nav>
+
+<section id="learning">
+    <h2>学习资源</h2>
+    <div class="site-list">
+        <div class="site-item" data-url="https://www.imooc.com">
+            <h3>慕课网</h3>
+            <p>一个提供在线课程学习的平台，涵盖编程、设计等多个领域。</p>
+            <a href="https://www.imooc.com" target="_blank">访问网站</a>
+            <button class="copy-btn" onclick="copyToClipboard('https://www.imooc.com')">复制链接</button>
+            <iframe class="iframe-preview" src="https://www.imooc.com" frameborder="0"></iframe>
         </div>
-    </header>
-
-    <div class="navbar">
-        <a href="#tech">科技</a>
-        <a href="#design">设计</a>
-        <a href="#music">音乐</a>
-        <a href="#video">视频</a>
-        <a href="#books">书籍</a>
-    </div>
-
-    <div class="container">
-        <div class="main-content">
-            <h2>欢迎来到宝藏网站导航</h2>
-            <p>这里是一些精选的宝藏网站，涵盖科技、设计、音乐、视频和书籍等领域。</p>
-            
-            <h3 id="tech">科技</h3>
-            <div class="card">
-                <img src="path_to_icon.png" alt="网站图标">
-                <h3>科技网站1</h3>
-                <p>网站描述...</p>
-                <a href="https://example.com" target="_blank">访问网站</a>
-            </div>
-            <div class="card">
-                <img src="path_to_icon.png" alt="网站图标">
-                <h3>科技网站2</h3>
-                <p>网站描述...</p>
-                <a href="https://example.com" target="_blank">访问网站</a>
-            </div>
-            <!-- 更多科技网站 -->
-            
-            <!-- 其他类别的卡片 -->
+        <div class="site-item" data-url="https://www.coursera.org">
+            <h3>Coursera</h3>
+            <p>提供全球顶尖大学的课程，涵盖多种学科。</p>
+            <a href="https://www.coursera.org" target="_blank">访问网站</a>
+            <button class="copy-btn" onclick="copyToClipboard('https://www.coursera.org')">复制链接</button>
+            <iframe class="iframe-preview" src="https://www.coursera.org" frameborder="0"></iframe>
+        </div>
+        <div class="site-item" data-url="https://www.edx.org">
+            <h3>edX</h3>
+            <p>一个提供来自知名大学的在线课程平台，内容丰富多样。</p>
+            <a href="https://www.edx.org" target="_blank">访问网站</a>
+            <button class="copy-btn" onclick="copyToClipboard('https://www.edx.org')">复制链接</button>
+            <iframe class="iframe-preview" src="https://www.edx.org" frameborder="0"></iframe>
         </div>
     </div>
+</section>
 
-    <footer>
-        <p>版权所有 &copy; 2024 宝藏网站导航</p>
-    </footer>
+<footer>
+    &copy; 2024 Cyberpunk 宝藏网站导航. All rights reserved.
+</footer>
+
+<script>
+    // 一键复制功能
+    function copyToClipboard(text) {
+        navigator.clipboard.writeText(text).then(function() {
+            alert('链接已复制: ' + text);
+        }, function(err) {
+            alert('复制失败');
+        });
+    }
+</script>
+
 </body>
 </html>

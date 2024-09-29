@@ -6,7 +6,7 @@
     <title>宝藏网站导航</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 0;
             background-color: #f4f4f4;
@@ -76,23 +76,29 @@
             background: #fff;
             margin-top: 20px;
         }
-        .main-content h2 {
+        .card {
+            background-color: white;
+            margin: 20px;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        .card:hover {
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+        }
+        .card img {
+            max-width: 100px;
+            max-height: 100px;
+            border-radius: 4px;
+        }
+        .card h3 {
+            margin: 10px 0;
             color: #333;
         }
-        .main-content .site-list {
-            list-style-type: none;
-            padding: 0;
-        }
-        .main-content .site-list li {
-            margin-bottom: 10px;
-        }
-        .main-content .site-list li a {
-            text-decoration: none;
-            color: #0779e4;
-            font-weight: bold;
-        }
-        .main-content .site-list li a:hover {
-            text-decoration: underline;
+        .card p {
+            margin: 0;
+            font-size: 14px;
         }
         footer {
             background: #333;
@@ -135,39 +141,21 @@
             <p>这里是一些精选的宝藏网站，涵盖科技、设计、音乐、视频和书籍等领域。</p>
             
             <h3 id="tech">科技</h3>
-            <ul class="site-list">
-                <li><a href="https://example.com" target="_blank">科技网站1</a></li>
-                <li><a href="https://example.com" target="_blank">科技网站2</a></li>
-                <!-- 更多科技网站 -->
-            </ul>
-
-            <h3 id="design">设计</h3>
-            <ul class="site-list">
-                <li><a href="https://example.com" target="_blank">设计网站1</a></li>
-                <li><a href="https://example.com" target="_blank">设计网站2</a></li>
-                <!-- 更多设计网站 -->
-            </ul>
-
-            <h3 id="music">音乐</h3>
-            <ul class="site-list">
-                <li><a href="https://example.com" target="_blank">音乐网站1</a></li>
-                <li><a href="https://example.com" target="_blank">音乐网站2</a></li>
-                <!-- 更多音乐网站 -->
-            </ul>
-
-            <h3 id="video">视频</h3>
-            <ul class="site-list">
-                <li><a href="https://example.com" target="_blank">视频网站1</a></li>
-                <li><a href="https://example.com" target="_blank">视频网站2</a></li>
-                <!-- 更多视频网站 -->
-            </ul>
-
-            <h3 id="books">书籍</h3>
-            <ul class="site-list">
-                <li><a href="https://example.com" target="_blank">书籍网站1</a></li>
-                <li><a href="https://example.com" target="_blank">书籍网站2</a></li>
-                <!-- 更多书籍网站 -->
-            </ul>
+            <div class="card">
+                <img src="path_to_icon.png" alt="网站图标">
+                <h3>科技网站1</h3>
+                <p>网站描述...</p>
+                <a href="https://example.com" target="_blank">访问网站</a>
+            </div>
+            <div class="card">
+                <img src="path_to_icon.png" alt="网站图标">
+                <h3>科技网站2</h3>
+                <p>网站描述...</p>
+                <a href="https://example.com" target="_blank">访问网站</a>
+            </div>
+            <!-- 更多科技网站 -->
+            
+            <!-- 其他类别的卡片 -->
         </div>
     </div>
 

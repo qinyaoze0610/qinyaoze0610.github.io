@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的数字花园</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/markdown-it/12.3.2/markdown-it.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/split.js/1.6.5/split.min.js"></script>
+    <style>
+        .node {
+            fill: #4CAF50;
+            stroke: #45a049;
+            stroke-width: 2px;
+        }
+        .link {
+            stroke: #999;
+            stroke-opacity: 0.6;
+        }
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+        .gutter {
+            background-color: #eee;
+            background-repeat: no-repeat;
+            background-position: 50%;
+        }
+        .gutter.gutter-horizontal {
+            background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAeCAYAAADkftS9AAAAIklEQVQoU2M4c+bMfxAGAgYYmwGrIIiDjrELjpo5aiZeMwF+yNnOs5KSvgAAAABJRU5ErkJggg==');
+            cursor: col-resize;
+        }
+    </style>
+</head>
+<body class="bg-green-50 min-h-screen">
+    <header class="bg-white shadow-sm">
+        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" aria-label="主导航">
+            <div class="flex justify-between h-16">
+                <div class="flex">
+                    <div class="flex-shrink-0 flex items-center">
+                        <svg class="h-8 w-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+                        </svg>
+                        <span class="ml-2 text-xl font-bold text-gray-800">我的数字花园</span>
+                    </div>
+                    <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+                        <button class="border-green-500 text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium" onclick="showArea('thoughts')" aria-current="page">思考</button>
+                        <button class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium" onclick="showArea('projects')">项目</button>
+                        <button class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium" onclick="showArea('learning')">学习</button>
+                    </div>
+                </div>
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <button onclick="showEditForm()" class="bg-green-600 p-1 rounded-full text-white hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white" aria-label="添加新笔记">
+                            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        <div class="px-4 py-6 sm:px-0">
+            <div class="mb-8">
+                <h1 class="text-3xl font-bold text-gray-900 mb-4">欢迎来到我的数字花园</h1>
+                <p class="text-xl text-gray-600">这里是我思考、学习和创造的空间。请随意探索！</p>
+            </div>
+
+            <div class="mb-8">
+                <div class="max-w-md w-full lg:max-w-xs">
+                    <label for="search" class="sr-only">搜索笔记</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <svg class="h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                                <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                        <input id="search" name="search" class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-green-500 focus:border-green-500 sm:text-sm" placeholder="搜索笔记..." type="search">
+                    </div>
+                </div>
+            </div>
+
+            <div id="content-area" class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                <!-- Content will be dynamically inserted here -->
+            </div>
+
+            <div id="edit-form" class="hidden mt-8 bg-white shadow sm:rounded-lg">
+                <div class="px-4 py-5 sm:p-6">
+                    <h2 class="text-lg leading-6 font-medium text-gray-900">添加新笔记</h2>
+                    <div class="mt-2 max-w-xl text-sm text-gray-500">
+                        <p>在这里添加您的新想法或笔记。支持Markdown格式。</p>
+                    </div>
+                    <form id="note-form" class="mt-5 space-y-4">
+                        <div>
+                            <label for="note-title" class="block text-sm font-medium text-gray-700">笔记标题</label>
+                            <input type="text" name="note-title" id="note-title" required class="mt-1 focus:ring-green-500 focus:border-green-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" placeholder="标题">
+                        </div>
+                        <div id="editor-container" class="flex h-96">
+                            <div id="markdown-editor" class="w-1/2 h-full">
+                                <label for="note-content" class="block text-sm font-medium text-gray-700">笔记内容 (Markdown)</label>
+                                <textarea name="note-content" id="note-content" rows="3" required class="mt-1 focus:ring-green-500 focus:border-green-500 block w-full h-full shadow-sm sm:text-sm border-gray-300 rounded-md" placeholder="在这里输入Markdown内容"></textarea>
+                            </div>
+                            <div id="markdown-preview" class="w-1/2 h-full p-4 border border-gray-300 rounded-md overflow-auto">
+                                <h3 class="text-lg font-medium text-gray-900 mb-2">预览</h3>
+                                <div id="preview-content"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <label for="note-tags" class="block text-sm font-medium text-gray-700">标签</label>
+                            <input type="text" name="note-tags" id="note-tags" required class="mt-1 focus:ring-green-500 focus:border-green-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" placeholder="标签 (用逗号分隔)">
+                        </div>
+                        <div>
+                            <label for="note-area" class="block text-sm font-medium text-gray-700">区域</label>
+                            <select id="note-area" name="note-area" required class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm rounded-md">
+                                <option value="thoughts">思考</option>
+                                <option value="projects">项目</option>
+                                <option value="learning">学习</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                            添加笔记
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <div id="heatmap" class="mt-8">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">发表笔记热力图</h2>
+                <div id="heatmap-chart" aria-label="笔记发表频率热力图"></div>
+            </div>
+
+            <div id="knowledge-graph" class="mt-8">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">知识图谱</h2>
+                <svg width="600" height="400" aria-label="知识关联图"></svg>
+            </div>
+
+            <div id="statistics" class="mt-8">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">笔记统计</h2>
+                <div id="statistics-content" class="bg-white p-4 rounded-lg shadow">
+                    <!-- Statistics will be dynamically inserted here -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        let notes = [
+            { id: 1, title: "关于数字花园的思考", content: "数字花园是一个很有趣的概念...", date: "2023-09-15", tags: ["数字花园", "思考"], area: "thoughts", versions: [] },
+            { id: 2, title: "学习React Hooks", content: "今天学习了useEffect的使用...", date: "2023-09-10", tags: ["React", "编程"], area: "learning", versions: [] },
+            { id: 3, title: "新项目构想", content: "有一个关于个人生产力工具的想法...", date: "2023-09-05", tags: ["项目", "生产力"], area: "projects", versions: [] },
+        ];
+
+        const md = window.markdownit();
+
+        function showArea(area) {
+            const contentArea = document.getElementById('content-area');
+            contentArea.innerHTML = '';
+            const filteredNotes = notes.filter(note => note.area === area);
+            filteredNotes.forEach(note => {
+                contentArea.innerHTML += `
+                    <article class="bg-white overflow-hidden shadow rounded-lg">
+                        <div class="px-4 py-5 sm:p-6">
+                            <h3 class="text-lg leading-6 font-medium text-gray-900">${note.title}</h3>
+                            <p class="mt-1 max-w-2xl text-sm text-gray-500">${note.date}</p>
+                            <div class="mt-1 text-sm text-gray-900">${md.render(note.content)}</div>
+                            <div class="mt-2">
+                                ${note.tags.map(tag => `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 mr-2">${tag}</span>`).join('')}
+                            </div>
+                            <div class="mt-4">
+                                <button onclick="showNoteHistory(${note.id})" class="text-sm text-blue-600 hover:text-blue-800">查看历史版本</button>
+                                <button onclick="exportNote(${note.id})" class="ml-4 text-sm text-blue-600 hover:text-blue-800">导出笔记</button>
+                                <button onclick="shareNote(${note.id})" class="ml-4 text-sm text-blue-600 hover:text-blue-800">分享笔记</button>
+                            </div>
+                        </div>
+                    </article>
+                `;
+            });
+            updateGraph();
+            updateHeatmap();
+            updateStatistics();
+        }
+
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        const searchNotes = debounce(() => {
+            const searchTerm = document.getElementById('search').value.toLowerCase();
+            const contentArea = document.getElementById('content-area');
+            contentArea.innerHTML = '';
+            const filteredNotes = notes.filter(note => 
+                note.title.toLowerCase().includes(searchTerm) || 
+                note.content.toLowerCase().includes(searchTerm) ||
+                note.tags.some(tag => tag.toLowerCase().includes(searchTerm))
+            );
+            filteredNotes.forEach(note => {
+                contentArea.innerHTML += `
+                    <article class="bg-white overflow-hidden shadow rounded-lg">
+                        <div class="px-4 py-5 sm:p-6">
+                            <h3 class="text-lg leading-6 font-medium text-gray-900">${note.title}</h3>
+                            <p class="mt-1 max-w-2xl text-sm text-gray-500">${note.date}</p>
+                            <div class="mt-1 text-sm text-gray-900">${md.render(note.content)}</div>
+                            <div class="mt-2">
+                                ${note.tags.map(tag => `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 mr-2">${tag}</span>`).join('')}
+                            </div>
+                            <div class="mt-4">
+                                <button onclick="showNoteHistory(${note.id})" class="text-sm text-blue-600 hover:text-blue-800">查看历史版本</button>
+                                <button onclick="exportNote(${note.id})" class="ml-4 text-sm text-blue-600 hover:text-blue-800">导出笔记</button>
+                                <button onclick="shareNote(${note.id})" class="ml-4 text-sm text-blue-600 hover:text-blue-800">分享笔记</button>
+                            </div>
+                        </div>
+                    </article>
+                `;
+            });
+        }, 300);
+
+        function showEditForm() {
+            const editForm = document.getElementById('edit-form');
+            editForm.classList.toggle('hidden');
+            if (!editForm.classList.contains('hidden')) {
+                initializeMarkdownEditor();
+            }
+        }
+
+        function initializeMarkdownEditor() {
+            const noteContent = document.getElementById('note-content');
+            const previewContent = document.getElementById('preview-content');
+
+            noteContent.addEventListener('input', debounce(() => {
+                previewContent.innerHTML = md.render(noteContent.value);
+            }, 300));
+
+            Split(['#markdown-editor', '#markdown-preview'], {
+                sizes: [50, 50],
+                minSize: 200,
+                gutterSize: 10,
+                cursor: 'col-resize'
+            });
+        }
+
+        function addNote(event) {
+            event.preventDefault();
+            const title = document.getElementById('note-title').value;
+            const content = document.getElementById('note-content').value;
+            const tags = document.getElementById('note-tags').value.split(',').map(tag => tag.trim());
+            const area = document.getElementById('note-area').value;
+            const newNote = {
+                id: notes.length + 1,
+                title: title,
+                content: content,
+                date: new Date().toISOString().split('T')[0],
+                tags: tags,
+                area: area,
+                versions: []
+            };
+            notes.push(newNote);
+            showArea(area);
+            showEditForm();
+            document.getElementById('note-form').reset();
+            updateStatistics();
+        }
+
+        function updateGraph() {
+            const svg = d3.select("#knowledge-graph svg");
+            svg.selectAll("*").remove();
+
+            const width = 600;
+            const height = 400;
+
+            const simulation = d3.forceSimulation(notes)
+                .force("link", d3.forceLink().id(d => d.id).distance(100))
+                .force("charge", d3.forceManyBody().strength(-50))
+                .force("center", d3.forceCenter(width / 2, height / 2));
+
+            const link = svg.append("g")
+                .attr("stroke", "#999")
+                .attr("stroke-opacity", 0.6)
+                .selectAll("line")
+                .data(getLinks())
+                .join("line");
+
+            const node = svg.append("g")
+                .attr("stroke", "#fff")
+                .attr("stroke-width", 1.5)
+                .selectAll("circle")
+                .data(notes)
+                .join("circle")
+                .attr("r", 5)
+                .attr("fill", "#4CAF50")
+                .call(drag(simulation));
+
+            node.append("title")
+                .text(d => d.title);
+
+            simulation.on("tick", () => {
+                link
+                    .attr("x1", d => d.source.x)
+                    .attr("y1", d => d.source.y)
+                    .attr("x2", d => d.target.x)
+                    .attr("y2", d => d.target.y);
+
+                node
+                    .attr("cx", d => d.x)
+                    .attr("cy", d => d.y);
+            });
+
+            function drag(simulation) {
+                function dragstarted(event) {
+                    if (!event.active) simulation.alphaTarget(0.3).restart();
+                    event.subject.fx = event.subject.x;
+                    event.subject.fy = event.subject.y;
+                }
+                
+                function dragged(event) {
+                    event.subject.fx = event.x;
+                    event.subject.fy = event.y;
+                }
+                
+                function dragended(event) {
+                    if (!event.active) simulation.alphaTarget(0);
+                    event.subject.fx = null;
+                    event.subject.fy = null;
+                }
+                
+                return d3.drag()
+                    .on("start", dragstarted)
+                    .on("drag", dragged)
+                    .on("end", dragended);
+            }
+        }
+
+        function getLinks() {
+            const links = [];
+            for (let i = 0; i < notes.length; i++) {
+                for (let j = i + 1; j < notes.length; j++) {
+                    if (notes[i].tags.some(tag => notes[j].tags.includes(tag))) {
+                        links.push({source: notes[i].id, target: notes[j].id});
+                    }
+                }
+            }
+            return links;
+        }
+
+        function updateHeatmap() {
+            const heatmapData = d3.group(notes, d => d.date);
+            const dates = Array.from(heatmapData.keys()).sort();
+            const cellSize = 20;
+            const width = dates.length * cellSize;
+            const height = 7 * cellSize; // 7 days in a week
+
+            d3.select("#heatmap-chart").selectAll("*").remove();
+
+            const svg = d3.select("#heatmap-chart")
+                .append("svg")
+                .attr("width", width + 40)
+                .attr("height", height + 40)
+                .append("g")
+                .attr("transform", `translate(20, 20)`);
+
+            const colorScale = d3.scaleLinear()
+                .domain([0, d3.max(Array.from(heatmapData.values()), d => d.length)])
+                .range(["#e5f5e0", "#31a354"]);
+
+            svg.selectAll("rect")
+                .data(dates)
+                .enter()
+                .append("rect")
+                .attr("x", (d, i) => i * cellSize)
+                .attr("y", d => {
+                    const date = new Date(d);
+                    return date.getDay() * cellSize;
+                })
+                .attr("width", cellSize)
+                .attr("height", cellSize)
+                .attr("fill", d => colorScale(heatmapData.get(d)?.length || 0))
+                .append("title")
+                .text(d => `${d}: ${heatmapData.get(d)?.length || 0} notes`);
+
+            // Add day labels in Chinese
+            const days = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+            svg.selectAll(".dayLabel")
+                .data(days)
+                .enter().append("text")
+                .text(d => d)
+                .attr("x", -5)
+                .attr("y", (d, i) => i * cellSize + cellSize / 2)
+                .style("text-anchor", "end")
+                .attr("alignment-baseline", "middle")
+                .attr("font-size", "10px");
+
+            // Add month labels
+            const monthLabels = dates.filter(d => d.endsWith('-01'));
+            svg.selectAll(".monthLabel")
+                .data(monthLabels)
+                .enter().append("text")
+                .text(d => new Date(d).toLocaleString('default', { month: 'short' }))
+                .attr("x", (d, i) => i * cellSize)
+                .attr("y", -5)
+                .style("text-anchor", "start")
+                .attr("font-size", "10px");
+        }
+
+        function updateStatistics() {
+            const statisticsContent = document.getElementById('statistics-content');
+            const totalNotes = notes.length;
+            const totalWords = notes.reduce((sum, note) => sum + note.content.split(/\s+/).length, 0);
+            const totalTags = [...new Set(notes.flatMap(note => note.tags))].length;
+
+            statisticsContent.innerHTML = `
+                <p>总笔记数：${totalNotes}</p>
+                <p>总字数：${totalWords}</p>
+                <p>总标签数：${totalTags}</p>
+            `;
+        }
+
+        function showNoteHistory(noteId) {
+            const note = notes.find(n => n.id === noteId);
+            if (!note) return;
+
+            const historyHtml = note.versions.map((version, index) => `
+                <div class="mb-4 p-4 bg-gray-100 rounded">
+                    <h4 class="font-bold">版本 ${index + 1}</h4>
+                    <p>日期：${version.date}</p>
+                    <div>${md.render(version.content)}</div>
+                    <button onclick="restoreVersion(${noteId}, ${index})" class="mt-2 text-sm text-blue-600 hover:text-blue-800">恢复此版本</button>
+                </div>
+            `).join('');
+
+            alert(`笔记历史：\n\n${historyHtml}`);
+        }
+
+        function restoreVersion(noteId, versionIndex) {
+            const note = notes.find(n => n.id === noteId);
+            if (!note) return;
+
+            const version = note.versions[versionIndex];
+            if (!version) return;
+
+            note.versions.unshift({
+                date: note.date,
+                content: note.content
+            });
+
+            note.content = version.content;
+            note.date = new Date().toISOString().split('T')[0];
+
+            showArea(note.area);
+        }
+
+        function exportNote(noteId) {
+            const note = notes.find(n => n.id === noteId);
+            if (!note) return;
+
+            const markdown = `# ${note.title}\n\n${note.content}\n\n标签：${note.tags.join(', ')}\n日期：${note.date}`;
+            
+            const blob = new Blob([markdown], { type: 'text/markdown;charset=utf-8;' });
+            const link = document.createElement("a");
+            if (link.download !== undefined) {
+                const url = URL.createObjectURL(blob);
+                link.setAttribute("href", url);
+                link.setAttribute("download", `${note.title}.md`);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+        }
+
+        function shareNote(noteId) {
+            const note = notes.find(n => n.id === noteId);
+            if (!note) return;
+
+            const shareUrl = `${window.location.origin}${window.location.pathname}?note=${noteId}`;
+            alert(`分享链接：${shareUrl}\n\n您可以复制此链接分享给他人。`);
+        }
+
+        // Event listeners
+        document.getElementById('search').addEventListener('input', searchNotes);
+        document.getElementById('note-form').addEventListener('submit', addNote);
+
+        // 初始化显示
+        document.addEventListener('DOMContentLoaded', () => {
+            showArea('thoughts');
+            updateStatistics();
+
+            // Check if there's a note ID in the URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const sharedNoteId = urlParams.get('note');
+            if (sharedNoteId) {
+                const sharedNote = notes.find(n => n.id === parseInt(sharedNoteId));
+                if (sharedNote) {
+                    alert(`查看分享的笔记：\n\n标题：${sharedNote.title}\n内容：${sharedNote.content}`);
+                }
+            }
+        });
+    </script>
+</body>
+</html>

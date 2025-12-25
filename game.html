@@ -1,0 +1,1322 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>游戏轮盘·惊喜夜 - 派对游戏策划方案</title>
+    <script src="https://cdn.tailwindcss.com/3.3.3"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&family=ZCOOL+QingKe+HuangYou&display=swap');
+        
+        :root {
+            --primary-color: #FF6B6B;
+            --secondary-color: #4ECDC4;
+            --accent-color: #FFD166;
+            --dark-color: #292F36;
+            --light-color: #F7FFF7;
+        }
+        
+        body {
+            font-family: 'ZCOOL QingKe HuangYou', sans-serif;
+            background-color: var(--light-color);
+            color: var(--dark-color);
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ff6b6b' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+        
+        .title-font {
+            font-family: 'ZCOOL KuaiLe', cursive;
+        }
+        
+        .glassmorphism {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 28px 0 rgba(31, 38, 135, 0.2);
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background-color: #ff5252;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4);
+        }
+        
+        .btn-secondary {
+            background-color: var(--secondary-color);
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #45b7af;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(78, 205, 196, 0.4);
+        }
+        
+        .btn-accent {
+            background-color: var(--accent-color);
+            color: var(--dark-color);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-accent:hover {
+            background-color: #ffc133;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 209, 102, 0.4);
+        }
+        
+        /* 轮盘样式 */
+        .wheel-container {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        
+        .wheel {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            transition: transform 5s cubic-bezier(0.1, 0.7, 0.1, 1);
+            position: relative;
+            overflow: hidden;
+            border: 8px solid var(--dark-color);
+        }
+        
+        .wheel-section {
+            position: absolute;
+            width: 50%;
+            height: 50%;
+            transform-origin: bottom right;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        
+        .wheel-section span {
+            transform: rotate(45deg);
+            text-align: center;
+            font-weight: bold;
+            font-size: 14px;
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+        
+        .wheel-pointer {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            border-bottom: 40px solid var(--dark-color);
+            z-index: 10;
+        }
+        
+        /* 动画效果 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+        
+        .delay-100 { animation-delay: 0.1s; }
+        .delay-200 { animation-delay: 0.2s; }
+        .delay-300 { animation-delay: 0.3s; }
+        .delay-400 { animation-delay: 0.4s; }
+        .delay-500 { animation-delay: 0.5s; }
+        
+        /* 响应式设计 */
+        @media (max-width: 640px) {
+            .wheel-container {
+                max-width: 300px;
+            }
+        }
+        
+        /* 模态框样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        
+        /* 权限验证样式 */
+        .auth-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 70vh;
+        }
+        
+        .auth-card {
+            width: 100%;
+            max-width: 400px;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        
+        /* 二维码展示区域 */
+        .qr-display-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem;
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        /* 抽签结果展示 */
+        .draw-result-card {
+            background: white;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        
+        .draw-result-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+        }
+        
+        /* 密码强度指示器 */
+        .password-strength {
+            height: 4px;
+            border-radius: 2px;
+            margin-top: 8px;
+            transition: width 0.3s ease;
+        }
+        
+        .strength-weak {
+            width: 33%;
+            background-color: #ff4757;
+        }
+        
+        .strength-medium {
+            width: 66%;
+            background-color: #ffa502;
+        }
+        
+        .strength-strong {
+            width: 100%;
+            background-color: #2ed573;
+        }
+        
+        /* 密码重置样式 */
+        .reset-password-container {
+            text-align: center;
+            margin-top: 1rem;
+        }
+        
+        .reset-password-container a {
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        
+        .reset-password-container a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- 头部导航 -->
+    <header class="bg-gradient-to-r from-[#FF6B6B] to-[#FF8E8E] text-white py-6 sticky top-0 z-50 shadow-md">
+        <div class="container mx-auto px-4 flex justify-between items-center">
+            <h1 class="text-3xl md:text-4xl font-bold title-font flex items-center">
+                <i class="fas fa-gamepad mr-3"></i>游戏轮盘·惊喜夜
+            </h1>
+            <div class="hidden md:flex space-x-4">
+                <button id="hostPanelBtn" class="bg-white text-[#FF6B6B] px-4 py-2 rounded-full font-bold hover:bg-opacity-90 transition-all">
+                    <i class="fas fa-user-shield mr-2"></i>主持人面板
+                </button>
+                <button id="historyBtn" class="bg-white text-[#FF6B6B] px-4 py-2 rounded-full font-bold hover:bg-opacity-90 transition-all">
+                    <i class="fas fa-history mr-2"></i>历史记录
+                </button>
+            </div>
+            <button id="mobileMenuBtn" class="md:hidden text-white text-2xl">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+        <!-- 移动端菜单 -->
+        <div id="mobileMenu" class="hidden md:hidden bg-white text-[#FF6B6B] absolute w-full">
+            <div class="container mx-auto px-4 py-2 flex flex-col">
+                <button id="mobileHostPanelBtn" class="py-3 px-4 hover:bg-gray-100 rounded-md font-bold">
+                    <i class="fas fa-user-shield mr-2"></i>主持人面板
+                </button>
+                <button id="mobileHistoryBtn" class="py-3 px-4 hover:bg-gray-100 rounded-md font-bold">
+                    <i class="fas fa-history mr-2"></i>历史记录
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主内容区域 -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- 认证页面 -->
+        <section id="authSection" class="auth-section">
+            <div class="auth-card glassmorphism">
+                <h2 class="text-2xl md:text-3xl font-bold mb-6 text-center title-font">欢迎来到游戏轮盘</h2>
+                <p class="text-center mb-6">请选择您的角色开始游戏</p>
+                <div class="flex flex-col space-y-4">
+                    <button id="playerBtn" class="btn-primary py-3 rounded-full text-xl font-bold shadow-lg">
+                        <i class="fas fa-user mr-2"></i>我是玩家
+                    </button>
+                    <button id="hostBtn" class="btn-secondary py-3 rounded-full text-xl font-bold shadow-lg">
+                        <i class="fas fa-user-shield mr-2"></i>我是主持人
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 玩家页面 -->
+        <section id="playerSection" class="hidden">
+            <div class="glassmorphism p-6 md:p-8 mb-8">
+                <h2 class="text-2xl md:text-3xl font-bold mb-6 text-center title-font">玩家区域</h2>
+                <p class="text-center mb-8">请扫描主持人提供的二维码获取您的游戏身份</p>
+                
+                <div class="qr-display-area mb-8">
+                    <div id="playerQrScanner" class="mb-4">
+                        <img src="https://api.coze_space/text2image?prompt=“二维码扫描界面示意图”&width=300&height=300" alt="扫描二维码示意图" class="w-64 h-64 object-cover">
+                    </div>
+                    <p class="text-gray-600">将二维码对准扫描框</p>
+                </div>
+                
+                <div id="playerIdentity" class="hidden">
+                    <div class="draw-result-card mb-6">
+                        <h3 class="text-xl font-bold mb-2 text-[#4ECDC4]">您的身份</h3>
+                        <p id="identityText" class="text-2xl font-bold text-[#FF6B6B]"></p>
+                    </div>
+                    <div class="text-center">
+                        <button id="refreshIdentityBtn" class="btn-accent px-6 py-2 rounded-full font-bold">
+                            <i class="fas fa-sync-alt mr-2"></i>刷新身份
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 轮盘区域 -->
+        <section id="wheelSection" class="hidden mb-12">
+            <div class="glassmorphism p-6 md:p-8">
+                <h2 class="text-2xl md:text-3xl font-bold mb-6 text-center title-font">惊喜游戏轮盘</h2>
+                <div class="flex flex-col items-center">
+                    <div class="wheel-container">
+                        <div class="wheel" id="gameWheel">
+                            <!-- 轮盘将通过JavaScript动态生成 -->
+                        </div>
+                        <div class="wheel-pointer"></div>
+                    </div>
+                    <button id="spinWheelBtn" class="btn-primary mt-8 px-8 py-3 rounded-full text-xl font-bold shadow-lg">
+                        <i class="fas fa-sync-alt mr-2"></i>开始抽取
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 游戏详情区域 -->
+        <section id="gameDetailSection" class="hidden mb-12">
+            <div class="glassmorphism p-6 md:p-8">
+                <h2 class="text-2xl md:text-3xl font-bold mb-6 title-font flex items-center">
+                    <i class="fas fa-info-circle mr-3 text-[#FF6B6B]"></i>
+                    <span id="gameName">游戏名称</span>
+                </h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div>
+                        <div class="mb-6">
+                            <h3 class="text-xl font-bold mb-2 text-[#4ECDC4]">游戏目的</h3>
+                            <p id="gamePurpose" class="text-gray-700">游戏目的描述</p>
+                        </div>
+                        
+                        <div class="mb-6">
+                            <h3 class="text-xl font-bold mb-2 text-[#4ECDC4]">所需物料</h3>
+                            <ul id="gameMaterials" class="list-disc pl-5 text-gray-700">
+                                <!-- 物料列表将通过JavaScript动态生成 -->
+                            </ul>
+                        </div>
+                        
+                        <div class="mb-6">
+                            <h3 class="text-xl font-bold mb-2 text-[#4ECDC4]">参与形式</h3>
+                            <p id="gameForm" class="text-gray-700">参与形式描述</p>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <div class="mb-6">
+                            <h3 class="text-xl font-bold mb-2 text-[#4ECDC4]">关键规则摘要</h3>
+                            <p id="gameRules" class="text-gray-700">游戏规则描述</p>
+                        </div>
+                        
+                        <div id="gameSpecialSection" class="mb-6 hidden">
+                            <h3 class="text-xl font-bold mb-2 text-[#4ECDC4]">特殊内容</h3>
+                            <div id="gameSpecialContent" class="text-gray-700">
+                                <!-- 特殊内容将通过JavaScript动态生成 -->
+                            </div>
+                        </div>
+                        
+                        <div class="flex flex-wrap gap-4 mt-8">
+                            <button id="backToWheelBtn" class="btn-primary px-6 py-2 rounded-full font-bold">
+                                <i class="fas fa-arrow-left mr-2"></i>返回轮盘
+                            </button>
+                            <button id="drawAgainBtn" class="btn-secondary px-6 py-2 rounded-full font-bold">
+                                <i class="fas fa-redo-alt mr-2"></i>重新抽取
+                            </button>
+                            <button id="generateDrawQrBtn" class="btn-accent px-6 py-2 rounded-full font-bold hidden">
+                                <i class="fas fa-qrcode mr-2"></i>生成身份抽签二维码
+                            </button>
+                            <button id="generateGameQrBtn" class="bg-[#292F36] text-white px-6 py-2 rounded-full font-bold">
+                                <i class="fas fa-qrcode mr-2"></i>生成游戏信息二维码
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 二维码区域 -->
+        <section id="qrCodeSection" class="hidden mb-12">
+            <div class="glassmorphism p-6 md:p-8">
+                <h2 class="text-2xl md:text-3xl font-bold mb-6 text-center title-font">
+                    <i class="fas fa-qrcode mr-3 text-[#292F36]"></i>
+                    <span id="qrCodeTitle">游戏关键信息二维码</span>
+                </h2>
+                
+                <div class="flex flex-col items-center">
+                    <div id="qrCodeContainer" class="mb-6 p-4 bg-white rounded-lg shadow-lg">
+                        <!-- 二维码将通过JavaScript动态生成 -->
+                    </div>
+                    <p class="text-gray-700 mb-6 text-center" id="qrCodeDescription">扫描二维码查看游戏关键信息</p>
+                    <button id="backToDetailBtn" class="btn-primary px-6 py-2 rounded-full font-bold">
+                        <i class="fas fa-arrow-left mr-2"></i>返回游戏详情
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 历史记录区域 -->
+        <section id="historySection" class="hidden mb-12">
+            <div class="glassmorphism p-6 md:p-8">
+                <h2 class="text-2xl md:text-3xl font-bold mb-6 title-font flex items-center">
+                    <i class="fas fa-history mr-3 text-[#FF6B6B]"></i>历史记录
+                </h2>
+                
+                <div id="historyList" class="space-y-4">
+                    <!-- 历史记录将通过JavaScript动态生成 -->
+                </div>
+                
+                <div class="mt-8 text-center">
+                    <button id="clearHistoryBtn" class="bg-gray-500 text-white px-6 py-2 rounded-full font-bold">
+                        <i class="fas fa-trash-alt mr-2"></i>清空历史记录
+                    </button>
+                    <button id="backFromHistoryBtn" class="btn-primary px-6 py-2 rounded-full font-bold ml-4">
+                        <i class="fas fa-arrow-left mr-2"></i>返回
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="bg-[#292F36] text-white py-6">
+        <div class="container mx-auto px-4 text-center">
+            <p class="mb-2">游戏轮盘·惊喜夜 - 派对游戏策划方案</p>
+            <p class="text-sm text-gray-400">created by <a href="https://space.coze.cn" class="text-[#4ECDC4] hover:underline">coze space</a></p>
+            <p class="text-sm text-gray-400 mt-1">页面内容均由 AI 生成，仅供参考</p>
+        </div>
+    </footer>
+
+    <!-- 主持人权限验证模态框 -->
+    <div id="hostAuthModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 class="text-2xl font-bold mb-4 title-font">主持人验证</h2>
+            <p class="mb-4">请输入主持人密码</p>
+            <input type="password" id="hostPassword" class="w-full px-4 py-2 mb-4 border border-gray-300 rounded-lg" placeholder="输入密码">
+            <div class="reset-password-container">
+                <a href="#" id="forgotPasswordLink">忘记密码？</a>
+            </div>
+            <button id="authSubmitBtn" class="btn-primary w-full py-2 rounded-full font-bold mt-4">验证</button>
+        </div>
+    </div>
+
+    <!-- 首次设置密码模态框 -->
+    <div id="setPasswordModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 class="text-2xl font-bold mb-4 title-font">设置主持人密码</h2>
+            <p class="mb-4">请设置您的主持人密码（至少8位，包含字母和数字）</p>
+            <input type="password" id="newPassword" class="w-full px-4 py-2 mb-2 border border-gray-300 rounded-lg" placeholder="设置新密码">
+            <div class="password-strength" id="passwordStrength"></div>
+            <input type="password" id="confirmPassword" class="w-full px-4 py-2 mt-4 mb-4 border border-gray-300 rounded-lg" placeholder="确认新密码">
+            <p id="passwordMatchError" class="text-red-500 text-sm hidden">两次输入的密码不匹配</p>
+            <p id="passwordStrengthError" class="text-red-500 text-sm hidden">密码强度不足，请包含字母和数字</p>
+            <button id="setPasswordSubmitBtn" class="btn-primary w-full py-2 rounded-full font-bold mt-4">设置密码</button>
+        </div>
+    </div>
+
+    <!-- 密码重置模态框 -->
+    <div id="resetPasswordModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 class="text-2xl font-bold mb-4 title-font">重置主持人密码</h2>
+            <p class="mb-4">请输入新密码（至少8位，包含字母和数字）</p>
+            <input type="password" id="resetNewPassword" class="w-full px-4 py-2 mb-2 border border-gray-300 rounded-lg" placeholder="设置新密码">
+            <div class="password-strength" id="resetPasswordStrength"></div>
+            <input type="password" id="resetConfirmPassword" class="w-full px-4 py-2 mt-4 mb-4 border border-gray-300 rounded-lg" placeholder="确认新密码">
+            <p id="resetPasswordMatchError" class="text-red-500 text-sm hidden">两次输入的密码不匹配</p>
+            <p id="resetPasswordStrengthError" class="text-red-500 text-sm hidden">密码强度不足，请包含字母和数字</p>
+            <button id="resetPasswordSubmitBtn" class="btn-primary w-full py-2 rounded-full font-bold mt-4">重置密码</button>
+        </div>
+    </div>
+
+    <!-- 游戏数据和主要逻辑 -->
+    <script>
+        // 游戏数据
+        const games = [
+            {
+                id: 1,
+                name: "国王与刺客",
+                purpose: "考验推理能力和表演技巧，增强朋友间的互动",
+                materials: ["扑克牌", "眼罩(可选)", "计时器"],
+                form: "多人参与，适合6-12人",
+                rules: "1. 随机选出国王、刺客和平民角色\n2. 国王需要通过提问找出刺客\n3. 刺客需要隐藏身份并刺杀国王\n4. 平民需要帮助国王找出刺客",
+                special: {
+                    type: "role",
+                    roles: ["国王", "刺客", "平民"],
+                    count: {
+                        "国王": 1,
+                        "刺客": 1,
+                        "平民": "remaining"
+                    }
+                }
+            },
+            {
+                id: 2,
+                name: "害你在心口难开",
+                purpose: "锻炼表达能力和反应速度，带来欢乐氛围",
+                materials: ["写有词语的卡片", "头带或贴纸"],
+                form: "多人参与，适合4-10人",
+                rules: "1. 每位玩家头上贴一张禁止做或说的卡片\n2. 玩家通过提问和对话引导他人做出被禁止的行为\n3. 被发现做出禁止行为的玩家淘汰\n4. 最后剩下的玩家获胜",
+                special: {
+                    type: "forbidden",
+                    items: [
+                        "说'你好'", "笑出声", "摸头发", "说数字", "提到食物",
+                        "说'我不知道'", "挠头", "交叉手臂", "叹气", "说'为什么'"
+                    ]
+                }
+            },
+            {
+                id: 3,
+                name: "UNO (个人赛)",
+                purpose: "经典卡牌游戏，考验策略和反应",
+                materials: ["UNO卡牌一副"],
+                form: "多人参与，适合2-10人",
+                rules: "1. 玩家轮流出牌，牌面需与上家颜色或数字相同\n2. 特殊牌有特殊效果（反转、跳过、+2、+4等）\n3. 出完倒数第二张牌时需喊'UNO'\n4. 最先出完所有牌的玩家获胜"
+            },
+            {
+                id: 4,
+                name: "谁是卧底（表演版）",
+                purpose: "锻炼观察力和表演能力，增加悬疑感",
+                materials: ["写有词语的卡片"],
+                form: "多人参与，适合5-10人",
+                rules: "1. 玩家分为卧底、平民和白板（可选）\n2. 每人抽取一张词语卡，卧底的词与平民不同但相关\n3. 玩家轮流用表演或描述展示自己的词\n4. 每轮投票淘汰嫌疑人，直至找出卧底或卧底获胜",
+                special: {
+                    type: "word",
+                    pairs: [
+                        {平民词: "可乐", 卧底词: "雪碧"},
+                        {平民词: "手机", 卧底词: "平板"},
+                        {平民词: "猫咪", 卧底词: "狗狗"},
+                        {平民词: "足球", 卧底词: "篮球"},
+                        {平民词: "牛奶", 卧底词: "豆浆"}
+                    ]
+                }
+            },
+            {
+                id: 5,
+                name: "德国心脏病",
+                purpose: "考验反应速度和专注力，带来紧张刺激的氛围",
+                materials: ["德国心脏病卡牌一副", "铃铛一个"],
+                form: "多人参与，适合2-6人",
+                rules: "1. 玩家轮流出牌，将牌面朝上放在桌子中央\n2. 当出现相同水果数量达到5个时，最快按铃的玩家赢得所有牌\n3. 错误按铃的玩家需要给其他玩家各一张牌\n4. 手中牌最先出完的玩家获胜"
+            },
+            {
+                id: 6,
+                name: "谁是贪吃鬼",
+                purpose: "趣味性强，考验反应和判断能力",
+                materials: ["饼干", "巧克力或其他小零食", "骰子"],
+                form: "多人参与，适合4-8人",
+                rules: "1. 玩家围坐一圈，中间放一堆零食\n2. 玩家轮流掷骰子，按点数前进\n3. 走到特定格子需要执行相应动作（吃零食、抢零食等）\n4. 游戏结束时，吃得最多或完成特定任务的玩家获胜"
+            },
+            {
+                id: 7,
+                name: "炸弹手机",
+                purpose: "制造紧张感和惊喜，适合活跃气氛",
+                materials: ["手机一部", "音乐"],
+                form: "多人参与，适合5-15人",
+                rules: "1. 播放音乐，玩家传递手机\n2. 音乐停止时，手持手机的玩家需要接受惩罚\n3. 惩罚内容可以是真心话、大冒险或其他有趣任务\n4. 游戏继续，直到所有玩家都参与过"
+            },
+            {
+                id: 8,
+                name: "扑克对碰",
+                purpose: "简单易玩，适合破冰和活跃气氛",
+                materials: ["扑克牌一副"],
+                form: "多人参与，适合4-10人",
+                rules: "1. 每位玩家分发相同数量的牌\n2. 玩家同时亮出一张牌，寻找对子\n3. 最快喊出对子的玩家赢得所有亮出的牌\n4. 手中牌最先出完的玩家淘汰，最后剩下的玩家获胜"
+            },
+            {
+                id: 9,
+                name: "相机抢镜头",
+                purpose: "创意拍照游戏，留下有趣的回忆",
+                materials: ["手机或相机", "道具（可选）"],
+                form: "多人参与，适合5-20人",
+                rules: "1. 设定拍照主题或动作\n2. 玩家在限定时间内摆好姿势\n3. 摄影师拍照，捕捉精彩瞬间\n4. 投票选出最佳照片，获胜者获得奖励"
+            },
+            {
+                id: 10,
+                name: "猜词游戏",
+                purpose: "考验表达能力和默契度，适合团队合作",
+                materials: ["写有词语的卡片", "计时器"],
+                form: "多人参与，适合4-12人（分成两队）",
+                rules: "1. 玩家分成两队，每队轮流派出一名描述者\n2. 描述者用语言或动作描述卡片上的词语，但不能说出词语中的任何字\n3. 队友在限定时间内猜出词语\n4. 规定时间内，猜对词语最多的队伍获胜",
+                special: {
+                    type: "guessWord",
+                    words: [
+                        "火锅", "电影院", "手机", "旅行", "音乐",
+                        "猫咪", "篮球", "冰淇淋", "电脑", "跳舞",
+                        "蛋糕", "跑步", "读书", "咖啡", "游泳"
+                    ]
+                }
+            }
+        ];
+
+        // 当前选中的游戏
+        let currentGame = null;
+        // 当前抽签数据
+        let currentDrawData = null;
+        // 密码相关常量
+        const STORAGE_KEY_PREFIX = 'game_wheel_';
+        const HOST_PASSWORD_KEY = STORAGE_KEY_PREFIX + 'host_password';
+        const PASSWORD_SALT_KEY = STORAGE_KEY_PREFIX + 'password_salt';
+        
+        // 生成随机盐值
+        function generateSalt() {
+            return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+        }
+        
+        // 简单的密码加密函数
+        function encryptPassword(password, salt) {
+            // 注意：这只是一个简单的示例加密方法，实际应用中应使用更安全的加密算法
+            let hash = 0;
+            for (let i = 0; i < password.length; i++) {
+                const char = password.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash; // 转换为32位整数
+            }
+            // 将salt与hash组合
+            return `${salt}:${Math.abs(hash).toString(16)}`;
+        }
+        
+        // 验证密码
+        function verifyPassword(inputPassword, storedPassword) {
+            if (!storedPassword) return false;
+            
+            const [salt, storedHash] = storedPassword.split(':');
+            const inputHash = encryptPassword(inputPassword, salt).split(':')[1];
+            
+            return inputHash === storedHash;
+        }
+        
+        // 检查密码强度
+        function checkPasswordStrength(password) {
+            // 至少8位，包含字母和数字
+            const hasMinLength = password.length >= 8;
+            const hasLetter = /[a-zA-Z]/.test(password);
+            const hasNumber = /[0-9]/.test(password);
+            
+            if (hasMinLength && hasLetter && hasNumber) {
+                return 'strong';
+            } else if (hasMinLength && (hasLetter || hasNumber)) {
+                return 'medium';
+            } else {
+                return 'weak';
+            }
+        }
+        
+        // 更新密码强度指示器
+        function updatePasswordStrength(passwordInput, strengthElement) {
+            const password = passwordInput.value;
+            const strength = checkPasswordStrength(password);
+            
+            // 移除所有强度类
+            strengthElement.classList.remove('strength-weak', 'strength-medium', 'strength-strong');
+            
+            // 添加当前强度类
+            if (password) {
+                strengthElement.classList.add(`strength-${strength}`);
+            }
+            
+            return strength;
+        }
+        
+        // 初始化轮盘
+        function initWheel() {
+            const wheel = document.getElementById('gameWheel');
+            const sliceCount = games.length;
+            const sliceAngle = 360 / sliceCount;
+            
+            // 定义轮盘颜色
+            const colors = [
+                '#FF6B6B', '#4ECDC4', '#FFD166', '#06D6A0', '#118AB2',
+                '#073B4C', '#EF476F', '#FFD166', '#06D6A0', '#118AB2'
+            ];
+            
+            // 清空轮盘
+            wheel.innerHTML = '';
+            
+            // 为轮盘设置固定宽高比
+            wheel.style.aspectRatio = '1/1';
+            
+            // 创建轮盘切片
+            for (let i = 0; i < sliceCount; i++) {
+                const slice = document.createElement('div');
+                slice.className = 'wheel-section';
+                slice.style.transform = `rotate(${i * sliceAngle}deg)`;
+                slice.style.backgroundColor = colors[i % colors.length];
+                
+                // 创建文本
+                const text = document.createElement('span');
+                text.textContent = games[i].name;
+                text.style.color = 'white';
+                
+                slice.appendChild(text);
+                wheel.appendChild(slice);
+            }
+        }
+        
+        // 旋转轮盘
+        function spinWheel() {
+            const wheel = document.getElementById('gameWheel');
+            const sliceCount = games.length;
+            const sliceAngle = 360 / sliceCount;
+            
+            // 随机选择一个游戏
+            const randomIndex = Math.floor(Math.random() * sliceCount);
+            currentGame = games[randomIndex];
+            
+            // 计算旋转角度（多转几圈再停在目标位置）
+            const rotation = 360 * 5 + (randomIndex * sliceAngle + sliceAngle / 2);
+            
+            // 添加动画类
+            wheel.style.transform = `rotate(${rotation}deg)`;
+            
+            // 旋转结束后显示游戏详情
+            setTimeout(() => {
+                showGameDetail();
+                saveGameRecord();
+            }, 5000);
+        }
+        
+        // 显示游戏详情
+        function showGameDetail() {
+            if (!currentGame) return;
+            
+            // 隐藏轮盘区域，显示游戏详情区域
+            document.getElementById('wheelSection').classList.add('hidden');
+            document.getElementById('gameDetailSection').classList.remove('hidden');
+            
+            // 填充游戏详情
+            document.getElementById('gameName').textContent = currentGame.name;
+            document.getElementById('gamePurpose').textContent = currentGame.purpose;
+            
+            // 填充物料列表
+            const materialsList = document.getElementById('gameMaterials');
+            materialsList.innerHTML = '';
+            currentGame.materials.forEach(material => {
+                const li = document.createElement('li');
+                li.textContent = material;
+                materialsList.appendChild(li);
+            });
+            
+            document.getElementById('gameForm').textContent = currentGame.form;
+            document.getElementById('gameRules').textContent = currentGame.rules;
+            
+            // 显示特殊内容（如果有）
+            const specialSection = document.getElementById('gameSpecialSection');
+            const specialContent = document.getElementById('gameSpecialContent');
+            
+            if (currentGame.special) {
+                specialSection.classList.remove('hidden');
+                
+                // 根据特殊内容类型显示不同的内容
+                if (currentGame.special.type === 'role') {
+                    specialContent.innerHTML = `
+                        <p>角色分配：${currentGame.special.roles.join('、')}</p>
+                        <p>分配规则：${JSON.stringify(currentGame.special.count)}</p>
+                    `;
+                } else if (currentGame.special.type === 'forbidden') {
+                    specialContent.innerHTML = `
+                        <p>禁止行为示例：${currentGame.special.items.slice(0, 5).join('、')}...</p>
+                    `;
+                } else if (currentGame.special.type === 'word') {
+                    specialContent.innerHTML = `
+                        <p>词语对示例：${currentGame.special.pairs[0].平民词} vs ${currentGame.special.pairs[0].卧底词}</p>
+                    `;
+                } else if (currentGame.special.type === 'guessWord') {
+                    specialContent.innerHTML = `
+                        <p>猜词示例：${currentGame.special.words.slice(0, 5).join('、')}...</p>
+                    `;
+                }
+                
+                // 显示身份抽签二维码按钮
+                document.getElementById('generateDrawQrBtn').classList.remove('hidden');
+            } else {
+                specialSection.classList.add('hidden');
+                document.getElementById('generateDrawQrBtn').classList.add('hidden');
+            }
+        }
+        
+        // 生成游戏信息二维码
+        function generateGameQRCode() {
+            if (!currentGame) return;
+            
+            // 隐藏游戏详情区域，显示二维码区域
+            document.getElementById('gameDetailSection').classList.add('hidden');
+            document.getElementById('qrCodeSection').classList.remove('hidden');
+            
+            // 设置二维码标题和描述
+            document.getElementById('qrCodeTitle').textContent = '游戏关键信息二维码';
+            document.getElementById('qrCodeDescription').textContent = '扫描二维码查看游戏关键信息';
+            
+            // 准备二维码内容（游戏关键信息）
+            const qrContent = `
+游戏名称：${currentGame.name}
+游戏目的：${currentGame.purpose}
+参与形式：${currentGame.form}
+关键规则摘要：${currentGame.rules.replace(/\n/g, '; ')}
+            `.trim();
+            
+            // 生成二维码
+            const qr = qrcode(0, 'L');
+            qr.addData(qrContent);
+            qr.make();
+            
+            // 显示二维码
+            const qrCodeContainer = document.getElementById('qrCodeContainer');
+            qrCodeContainer.innerHTML = qr.createImgTag(8);
+        }
+        
+        // 生成身份抽签二维码
+        function generateDrawQRCode() {
+            if (!currentGame || !currentGame.special) return;
+            
+            // 隐藏游戏详情区域，显示二维码区域
+            document.getElementById('gameDetailSection').classList.add('hidden');
+            document.getElementById('qrCodeSection').classList.remove('hidden');
+            
+            // 设置二维码标题和描述
+            document.getElementById('qrCodeTitle').textContent = '身份抽签二维码';
+            document.getElementById('qrCodeDescription').textContent = '玩家扫描此二维码获取随机身份';
+            
+            // 生成唯一的抽签ID
+            const drawId = Date.now().toString();
+            
+            // 根据游戏类型准备抽签数据
+            let drawData = {};
+            
+            if (currentGame.special.type === 'role') {
+                // 角色分配
+                drawData = {
+                    type: 'role',
+                    roles: currentGame.special.roles,
+                    count: currentGame.special.count,
+                    assigned: []
+                };
+            } else if (currentGame.special.type === 'forbidden') {
+                // 禁止行为分配
+                drawData = {
+                    type: 'forbidden',
+                    items: [...currentGame.special.items],
+                    assigned: []
+                };
+            } else if (currentGame.special.type === 'word') {
+                // 词语对分配
+                const randomPairIndex = Math.floor(Math.random() * currentGame.special.pairs.length);
+                const selectedPair = currentGame.special.pairs[randomPairIndex];
+                
+                drawData = {
+                    type: 'word',
+                    pair: selectedPair,
+                    assigned: []
+                };
+            } else if (currentGame.special.type === 'guessWord') {
+                // 猜词卡片
+                const randomWordIndex = Math.floor(Math.random() * currentGame.special.words.length);
+                const selectedWord = currentGame.special.words[randomWordIndex];
+                
+                drawData = {
+                    type: 'guessWord',
+                    word: selectedWord,
+                    assigned: []
+                };
+            }
+            
+            // 保存抽签数据到localStorage
+            localStorage.setItem(`draw_${drawId}`, JSON.stringify(drawData));
+            
+            // 保存当前抽签ID
+            currentDrawData = drawId;
+            
+            // 生成二维码，包含抽签ID
+            const qrContent = `game_draw:${drawId}`;
+            
+            // 生成二维码
+            const qr = qrcode(0, 'L');
+            qr.addData(qrContent);
+            qr.make();
+            
+            // 显示二维码
+            const qrCodeContainer = document.getElementById('qrCodeContainer');
+            qrCodeContainer.innerHTML = qr.createImgTag(8);
+        }
+        
+        // 玩家获取身份
+        function getPlayerIdentity(drawId) {
+            // 从localStorage获取抽签数据
+            const drawDataStr = localStorage.getItem(`draw_${drawId}`);
+            if (!drawDataStr) {
+                alert('无效的抽签ID或抽签已结束');
+                return null;
+            }
+            
+            const drawData = JSON.parse(drawDataStr);
+            let identity = null;
+            
+            // 根据抽签类型分配身份
+            if (drawData.type === 'role') {
+                // 角色分配逻辑
+                // 这里简化处理，随机分配一个角色
+                const randomIndex = Math.floor(Math.random() * drawData.roles.length);
+                identity = drawData.roles[randomIndex];
+            } else if (drawData.type === 'forbidden') {
+                // 禁止行为分配
+                if (drawData.items.length === 0) {
+                    // 如果没有可用的禁止行为，重新使用所有行为
+                    drawData.items = [...currentGame.special.items];
+                }
+                
+                // 随机选择一个禁止行为
+                const randomIndex = Math.floor(Math.random() * drawData.items.length);
+                identity = drawData.items.splice(randomIndex, 1)[0];
+            } else if (drawData.type === 'word') {
+                // 词语对分配（谁是卧底）
+                // 随机分配平民词或卧底词
+                identity = Math.random() > 0.2 ? drawData.pair.平民词 : drawData.pair.卧底词;
+            } else if (drawData.type === 'guessWord') {
+                // 猜词卡片
+                identity = drawData.word;
+            }
+            
+            // 保存更新后的抽签数据
+            localStorage.setItem(`draw_${drawId}`, JSON.stringify(drawData));
+            
+            return identity;
+        }
+        
+        // 保存游戏记录
+        function saveGameRecord() {
+            if (!currentGame) return;
+            
+            // 获取历史记录
+            let history = JSON.parse(localStorage.getItem('gameHistory') || '[]');
+            
+            // 创建新记录
+            const record = {
+                id: Date.now(),
+                gameId: currentGame.id,
+                gameName: currentGame.name,
+                timestamp: new Date().toLocaleString()
+            };
+            
+            // 添加到历史记录
+            history.unshift(record);
+            
+            // 保存到localStorage
+            localStorage.setItem('gameHistory', JSON.stringify(history));
+        }
+        
+        // 显示历史记录
+        function showHistory() {
+            // 隐藏其他区域，显示历史记录区域
+            document.getElementById('authSection').classList.add('hidden');
+            document.getElementById('playerSection').classList.add('hidden');
+            document.getElementById('wheelSection').classList.add('hidden');
+            document.getElementById('gameDetailSection').classList.add('hidden');
+            document.getElementById('qrCodeSection').classList.add('hidden');
+            document.getElementById('historySection').classList.remove('hidden');
+            
+            // 获取历史记录
+            const history = JSON.parse(localStorage.getItem('gameHistory') || '[]');
+            
+            // 显示历史记录
+            const historyList = document.getElementById('historyList');
+            historyList.innerHTML = '';
+            
+            if (history.length === 0) {
+                historyList.innerHTML = '<p class="text-gray-500 text-center">暂无历史记录</p>';
+                return;
+            }
+            
+            // 创建历史记录项
+            history.forEach(record => {
+                const game = games.find(g => g.id === record.gameId);
+                
+                const recordItem = document.createElement('div');
+                recordItem.className = 'p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow';
+                recordItem.innerHTML = `
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h4 class="font-bold text-lg text-[#FF6B6B]">${record.gameName}</h4>
+                            <p class="text-gray-500 text-sm">${record.timestamp}</p>
+                        </div>
+                        <button class="view-history-btn bg-[#4ECDC4] text-white px-3 py-1 rounded-full text-sm" data-game-id="${record.gameId}">
+                            查看详情
+                        </button>
+                    </div>
+                `;
+                
+                historyList.appendChild(recordItem);
+            });
+            
+            // 添加查看详情按钮事件
+            document.querySelectorAll('.view-history-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const gameId = parseInt(this.getAttribute('data-game-id'));
+                    currentGame = games.find(g => g.id === gameId);
+                    showGameDetail();
+                });
+            });
+        }
+        
+        // 清空历史记录
+        function clearHistory() {
+            if (confirm('确定要清空所有历史记录吗？')) {
+                localStorage.removeItem('gameHistory');
+                showHistory(); // 刷新历史记录显示
+            }
+        }
+        
+        // 主持人验证
+        function hostAuth() {
+            const password = document.getElementById('hostPassword').value;
+            const storedPassword = localStorage.getItem(HOST_PASSWORD_KEY);
+            
+            // 简单的密码验证
+            if (verifyPassword(password, storedPassword)) {
+                // 验证成功，隐藏模态框，显示轮盘区域
+                document.getElementById('hostAuthModal').style.display = 'none';
+                document.getElementById('authSection').classList.add('hidden');
+                document.getElementById('wheelSection').classList.remove('hidden');
+                initWheel(); // 初始化轮盘
+            } else {
+                // 验证失败，显示错误信息
+                alert('密码错误，请重试');
+            }
+        }
+        
+        // 设置主持人密码
+        function setHostPassword() {
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const passwordStrength = checkPasswordStrength(newPassword);
+            
+            // 隐藏所有错误消息
+            document.getElementById('passwordMatchError').classList.add('hidden');
+            document.getElementById('passwordStrengthError').classList.add('hidden');
+            
+            // 验证密码
+            if (newPassword !== confirmPassword) {
+                document.getElementById('passwordMatchError').classList.remove('hidden');
+                return;
+            }
+            
+            if (passwordStrength === 'weak') {
+                document.getElementById('passwordStrengthError').classList.remove('hidden');
+                return;
+            }
+            
+            // 生成新的盐值
+            const salt = generateSalt();
+            
+            // 加密并存储密码
+            const encryptedPassword = encryptPassword(newPassword, salt);
+            localStorage.setItem(HOST_PASSWORD_KEY, encryptedPassword);
+            
+            // 存储盐值（实际应用中可能不需要单独存储）
+            localStorage.setItem(PASSWORD_SALT_KEY, salt);
+            
+            // 关闭模态框，显示轮盘区域
+            document.getElementById('setPasswordModal').style.display = 'none';
+            document.getElementById('authSection').classList.add('hidden');
+            document.getElementById('wheelSection').classList.remove('hidden');
+            initWheel(); // 初始化轮盘
+        }
+        
+        // 重置主持人密码
+        function resetHostPassword() {
+            const newPassword = document.getElementById('resetNewPassword').value;
+            const confirmPassword = document.getElementById('resetConfirmPassword').value;
+            const passwordStrength = checkPasswordStrength(newPassword);
+            
+            // 隐藏所有错误消息
+            document.getElementById('resetPasswordMatchError').classList.add('hidden');
+            document.getElementById('resetPasswordStrengthError').classList.add('hidden');
+            
+            // 验证密码
+            if (newPassword !== confirmPassword) {
+                document.getElementById('resetPasswordMatchError').classList.remove('hidden');
+                return;
+            }
+            
+            if (passwordStrength === 'weak') {
+                document.getElementById('resetPasswordStrengthError').classList.remove('hidden');
+                return;
+            }
+            
+            // 生成新的盐值
+            const salt = generateSalt();
+            
+            // 加密并存储新密码
+            const encryptedPassword = encryptPassword(newPassword, salt);
+            localStorage.setItem(HOST_PASSWORD_KEY, encryptedPassword);
+            localStorage.setItem(PASSWORD_SALT_KEY, salt);
+            
+            // 关闭重置密码模态框，打开验证模态框
+            document.getElementById('resetPasswordModal').style.display = 'none';
+            document.getElementById('hostAuthModal').style.display = 'block';
+            
+            // 提示密码已重置
+            alert('密码已成功重置，请使用新密码登录');
+        }
+        
+        // 初始化页面
+        function initPage() {
+            // 获取模态框元素
+            const hostAuthModal = document.getElementById('hostAuthModal');
+            const setPasswordModal = document.getElementById('setPasswordModal');
+            const resetPasswordModal = document.getElementById('resetPasswordModal');
+            
+            const hostAuthCloseBtn = hostAuthModal.getElementsByClassName('close')[0];
+            const setPasswordCloseBtn = setPasswordModal.getElementsByClassName('close')[0];
+            const resetPasswordCloseBtn = resetPasswordModal.getElementsByClassName('close')[0];
+            
+            // 打开模态框
+            function openHostAuthModal() {
+                // 检查是否已设置密码
+                const storedPassword = localStorage.getItem(HOST_PASSWORD_KEY);
+                
+                if (!storedPassword) {
+                    // 首次使用，打开设置密码模态框
+                    setPasswordModal.style.display = 'block';
+                } else {
+                    // 已设置密码，打开验证模态框
+                    hostAuthModal.style.display = 'block';
+                }
+            }
+            
+            // 关闭模态框
+            function closeModal(modal) {
+                modal.style.display = 'none';
+            }
+            
+            // 点击关闭按钮关闭模态框
+            hostAuthCloseBtn.addEventListener('click', () => closeModal(hostAuthModal));
+            setPasswordCloseBtn.addEventListener('click', () => closeModal(setPasswordModal));
+            resetPasswordCloseBtn.addEventListener('click', () => closeModal(resetPasswordModal));
+            
+            // 点击模态框外部关闭模态框
+            window.addEventListener('click', function(event) {
+                if (event.target === hostAuthModal) {
+                    closeModal(hostAuthModal);
+                } else if (event.target === setPasswordModal) {
+                    closeModal(setPasswordModal);
+                } else if (event.target === resetPasswordModal) {
+                    closeModal(resetPasswordModal);
+                }
+            });
+            
+            // 添加事件监听器 - 角色选择
+            document.getElementById('playerBtn').addEventListener('click', () => {
+                document.getElementById('authSection').classList.add('hidden');
+                document.getElementById('playerSection').classList.remove('hidden');
+            });
+            
+            document.getElementById('hostBtn').addEventListener('click', openHostAuthModal);
+            
+            // 主持人验证提交
+            document.getElementById('authSubmitBtn').addEventListener('click', hostAuth);
+            
+            // 设置密码提交
+            document.getElementById('setPasswordSubmitBtn').addEventListener('click', setHostPassword);
+            
+            // 重置密码提交
+            document.getElementById('resetPasswordSubmitBtn').addEventListener('click', resetHostPassword);
+            
+            // 忘记密码链接
+            document.getElementById('forgotPasswordLink').addEventListener('click', function(e) {
+                e.preventDefault();
+                closeModal(hostAuthModal);
+                resetPasswordModal.style.display = 'block';
+            });
+            
+            // 密码强度检测
+            document.getElementById('newPassword').addEventListener('input', function() {
+                updatePasswordStrength(this, document.getElementById('passwordStrength'));
+            });
+            
+            document.getElementById('resetNewPassword').addEventListener('input', function() {
+                updatePasswordStrength(this, document.getElementById('resetPasswordStrength'));
+            });
+            
+            // 移动端菜单
+            document.getElementById('mobileMenuBtn').addEventListener('click', () => {
+                document.getElementById('mobileMenu').classList.toggle('hidden');
+            });
+            
+            // 主持人面板按钮
+            document.getElementById('hostPanelBtn').addEventListener('click', openHostAuthModal);
+            document.getElementById('mobileHostPanelBtn').addEventListener('click', () => {
+                openHostAuthModal();
+                document.getElementById('mobileMenu').classList.add('hidden');
+            });
+            
+            // 历史记录按钮
+            document.getElementById('historyBtn').addEventListener('click', showHistory);
+            document.getElementById('mobileHistoryBtn').addEventListener('click', () => {
+                showHistory();
+                document.getElementById('mobileMenu').classList.add('hidden');
+            });
+            
+            // 轮盘旋转按钮
+            document.getElementById('spinWheelBtn').addEventListener('click', spinWheel);
+            
+            // 重新抽取按钮
+            document.getElementById('drawAgainBtn').addEventListener('click', () => {
+                document.getElementById('gameDetailSection').classList.add('hidden');
+                document.getElementById('wheelSection').classList.remove('hidden');
+            });
+            
+            // 返回轮盘按钮
+            document.getElementById('backToWheelBtn').addEventListener('click', () => {
+                document.getElementById('gameDetailSection').classList.add('hidden');
+                document.getElementById('wheelSection').classList.remove('hidden');
+            });
+            
+            // 生成游戏信息二维码按钮
+            document.getElementById('generateGameQrBtn').addEventListener('click', generateGameQRCode);
+            
+            // 生成身份抽签二维码按钮
+            document.getElementById('generateDrawQrBtn').addEventListener('click', generateDrawQRCode);
+            
+            // 返回游戏详情按钮
+            document.getElementById('backToDetailBtn').addEventListener('click', () => {
+                document.getElementById('qrCodeSection').classList.add('hidden');
+                document.getElementById('gameDetailSection').classList.remove('hidden');
+            });
+            
+            // 清空历史记录按钮
+            document.getElementById('clearHistoryBtn').addEventListener('click', clearHistory);
+            
+            // 返回按钮
+            document.getElementById('backFromHistoryBtn').addEventListener('click', () => {
+                document.getElementById('historySection').classList.add('hidden');
+                document.getElementById('authSection').classList.remove('hidden');
+            });
+            
+            // 玩家刷新身份按钮
+            document.getElementById('refreshIdentityBtn').addEventListener('click', () => {
+                document.getElementById('playerIdentity').classList.add('hidden');
+                document.getElementById('playerQrScanner').classList.remove('hidden');
+            });
+            
+            // 模拟玩家扫码获取身份（实际应用中应该使用真实的扫码功能）
+            document.getElementById('playerQrScanner').addEventListener('click', () => {
+                // 这里模拟扫码获取抽签ID
+                // 实际应用中，应该使用真实的扫码功能获取二维码内容
+                if (currentDrawData) {
+                    const identity = getPlayerIdentity(currentDrawData);
+                    if (identity) {
+                        document.getElementById('identityText').textContent = identity;
+                        document.getElementById('playerQrScanner').classList.add('hidden');
+                        document.getElementById('playerIdentity').classList.remove('hidden');
+                    }
+                } else {
+                    alert('请等待主持人生成抽签二维码');
+                }
+            });
+        }
+        
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', initPage);
+    </script>
+</body>
+</html>
